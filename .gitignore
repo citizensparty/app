@@ -28,3 +28,6 @@ native/ios/DerivedData/
 
 # project notes for Claude Code: kept locally, not in the repo
 CLAUDE.md
+
+# private feedback log (tools/feedback.py --sync): never committed
+feedback/
