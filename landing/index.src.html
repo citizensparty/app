@@ -137,6 +137,16 @@ section{padding:64px 0}
 .sechd .k{font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 .sechd h2{font-size:clamp(28px,4vw,40px);font-weight:800}
 .sechd p{color:var(--ink2);margin-top:12px}
+.plan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.layer{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.layer .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.layer .n{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:800 16px var(--display)}
+.layer h3{font-size:19px;margin:0}
+.layer p{color:var(--ink2);font-size:15.5px;margin:0}
+.layer .eg{font-size:14.5px;color:var(--mute);border-left:3px solid var(--line);padding-left:10px}
+.when{font-weight:700;font-size:13px;border-radius:999px;padding:3px 10px;white-space:nowrap;background:var(--accent-soft);color:var(--accent)}
+.when.next{background:color-mix(in srgb,var(--warn) 20%,transparent);color:color-mix(in srgb,var(--warn) 50%,var(--ink))}
+@media (max-width:860px){.plan{grid-template-columns:1fr}}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
 .step{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-content:start}
 .step .n{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:800 16px var(--display)}
@@ -289,6 +299,27 @@ footer .brand{font-size:16px}
         <div class="step"><div class="n">2</div><h3>Propose</h3><p>Have an idea for what the party should stand for? Put it forward. If your neighbors back it, the whole grid votes on it.</p></div>
         <div class="step"><div class="n">3</div><h3>Vote</h3><p>Every member has the right to vote on everything, and the responsibility to show up when it counts.</p></div>
         <div class="step"><div class="n">4</div><h3>Go BC-wide</h3><p>A principle that passes in one grid can go to every grid. If most grids agree, it becomes the party's.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="plan">
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">Where we&#39;re going</div>
+        <h2>First what we stand for. Then the laws. Then the team.</h2>
+        <p>In most parties, a few insiders write the platform and pick who runs things. Here, members do that work, in three layers.</p>
+      </div>
+      <div class="plan">
+        <div class="layer"><div class="top"><div class="n">1</div><span class="when">Live now</span></div><h3>Principles</h3>
+          <p>Short statements of what we stand for, chosen by the members of each grid. No leader hands them down, so the party believes what its members believe.</p>
+          <p class="eg">&ldquo;Party finances are published every month.&rdquo;</p></div>
+        <div class="layer"><div class="top"><div class="n">2</div><span class="when next">Coming next</span></div><h3>Laws we write ourselves</h3>
+          <p>Members draft the actual changes they want, word for word. Then we hand them to our candidates with one instruction: pass this as written.</p>
+          <p class="eg">A change to a BC law, ready for the legislature.</p></div>
+        <div class="layer"><div class="top"><div class="n">3</div><span class="when next">Coming next</span></div><h3>A team we elect</h3>
+          <p>Some work needs one person in charge, not a committee. Members elect someone for each job, and only they can remove them.</p>
+          <p class="eg">Social media, door knocking, signs and flyers.</p></div>
       </div>
     </div>
   </section>
