@@ -1249,7 +1249,14 @@ function provFrom(m){const src=S.rawItems[m.src];if(!src)return null;const t0=m.
 // An outcome is believed only if it's true: everyone eligible really voted, the motion really passed, or the
 // proposal really was voided at that moment. A false one is ignored, and the vote just runs its normal time.
 function applyEnds(items,ok){for(const id in items){const e=S.ends[id];if(!e||!ok(id,e))continue;const it=items[id]=Object.assign({},items[id]);it.closes=e.closes;if(e.full)it.full=true;if(e.voided){it.voided=true;it.voidBy=e.voidBy}}}
-function buildItems(ok){const o={};for(const id in S.rawItems)o[id]=S.rawItems[id];applyEnds(o,ok);S.items=o;C={};
+// Proposals the party hides for breaking its rules (citizensparty.ca/safety), listed in the signed party settings
+// (tools/party.py hide). The record keeps them and votes count as before; the app shows a placeholder instead of the
+// words. Every copy of the same words gets the same placeholder, so the rules that compare wording still agree.
+const HIDDEN_TEXT="Hidden by the party for breaking its rules.";
+function hideTexts(o){const ids=(window.CPAccount&&window.CPAccount.hidden&&window.CPAccount.hidden())||[];if(!ids.length)return;
+  const bad=new Set(ids.map(id=>o[id]&&o[id].text).filter(Boolean));if(!bad.size)return;
+  for(const id in o){const it=o[id];if(it&&bad.has(it.text))o[id]=Object.assign({},it,{text:HIDDEN_TEXT+" (ref "+(hash(it.text)>>>0).toString(36)+")",hidden:true})}}
+function buildItems(ok){const o={};for(const id in S.rawItems)o[id]=S.rawItems[id];hideTexts(o);applyEnds(o,ok);S.items=o;C={};
   const ms=Object.values(o).filter(m=>m.kind==="promote").sort((a,b)=>a.at-b.at);
   for(const m of ms){if(m.voided||!isClosed(m)||!tally(m).pass)continue;const p=provFrom(m);if(!p)continue;o[p.id]=p;C={}}
   const ps={};for(const id in o)if(id.startsWith("prov-"))ps[id]=o[id];applyEnds(ps,ok);Object.assign(o,ps);C={}}
@@ -1358,7 +1365,7 @@ function soonPanel(k){const W=k==="workshops";
 // Feedback: kept privately by citizensparty.ca (POST /api/feedback), never on the public record
 // Report: a proposal that breaks the rules (hate, threats, illegal content, someone's private details) goes to the same private inbox.
 // Nothing is removed from the record; members can still ignore its author.
-function reportLink(it){if(!it||!it.by||it.by===S.me||!it.text)return "";
+function reportLink(it){if(!it||!it.by||it.by===S.me||!it.text||it.hidden)return "";
   return '<p class="small muted" style="margin:0;text-align:center"><button type="button" class="tlink plain" data-act="report" data-v="'+it.id+'">Report this proposal</button></p>'}
 const FEEDBACK_URL=((window.CP_BUILD&&window.CP_BUILD.directory)||"").replace(/\/$/,"")+"/api/feedback";
 function feedbackView(v){const about=v.about==="workshops"?"Workshops":v.about==="roles"?"Roles":"";

@@ -13,6 +13,8 @@ Its secret is kept at ~/.citizensparty/owner.key (readable only by you), never i
   python3 tools/party.py remove-registrar <npub or hex>
   python3 tools/party.py member-cap <n>       the most members the hosts will approve (default 10000)
   python3 tools/party.py host-cap <n>         the most hosts the network lists (default 10000)
+  python3 tools/party.py hide <item id>       hide a proposal that breaks the rules (citizensparty.ca/safety) in the app;
+                                              the record keeps it. unhide <item id> shows it again. Then sign and deploy.
   python3 tools/party.py sign                 sign config/party.json -> config/party.signed.json (build.py ships it)
   python3 tools/party.py publish              send the signed config to the seed hosts now (needs: pip install websockets)
 
@@ -148,6 +150,8 @@ def signed_event(c, sk):
     for k in ("memberCap", "hostCap"):
         if c.get(k):
             content[k] = int(c[k])
+    if c.get("hidden"):
+        content["hidden"] = sorted(set(c["hidden"]))
     return sign(sk, KIND_DOC, [["d", "party/config"], ["c", "party"], ["p", "1"], ["ms", str(int(time.time() * 1000) % 1000)]], json.dumps(content, separators=(",", ":")))
 
 
@@ -173,6 +177,7 @@ def main(a):
         print("hosts:")
         for h in c["hosts"]:
             print("  ", h["url"], h.get("name", ""), h.get("pubkey", "")[:16] + "…")
+        print("hidden proposals:", ", ".join(c.get("hidden", [])) or "none")
         print("member cap:", c.get("memberCap") or 10000, " host cap:", c.get("hostCap") or 10000)
         print("signed:", "yes" if SIGNED.exists() else "no")
     elif cmd == "add-host":
@@ -188,6 +193,12 @@ def main(a):
         save(c)
     elif cmd == "remove-registrar":
         k = to_hex(a[1]); c["registrars"] = [x for x in c["registrars"] if x != k]; save(c)
+    elif cmd in ("hide", "unhide"):
+        i = a[1].removeprefix("items/")
+        h = set(c.get("hidden", []))
+        h.add(i) if cmd == "hide" else h.discard(i)
+        c["hidden"] = sorted(h); save(c)
+        print(("hidden: " if cmd == "hide" else "shown again: ") + i + "  (now: python3 tools/party.py sign, then deploy)")
     elif cmd in ("member-cap", "host-cap"):
         c["memberCap" if cmd == "member-cap" else "hostCap"] = int(a[1]); save(c)
     elif cmd == "sign":

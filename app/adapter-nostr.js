@@ -31,7 +31,7 @@ const SEC=(()=>{
 })();
 
 // ---------- party config: who the owners, registrars and hosts are ----------
-let party={hosts:BUILD.hosts||[],registrars:[],at:0};
+let party={hosts:BUILD.hosts||[],registrars:[],at:0,hidden:[]};
 const owners=new Set((BUILD.owners||[]).map(x=>x.toLowerCase()));
 // The installed app (BUILD.remote) reads the signed party settings from citizensparty.ca. The party's public key
 // is built in, so a hijacked website can't swap it; an app built without one reads it from the site (and caches it).
@@ -46,7 +46,8 @@ function takeParty(ev){
   if(!ev||!owners.has(ev.pubkey)||!N.verifyEvent(ev))return false;
   let c;try{c=JSON.parse(ev.content)}catch(e){return false}
   if((c.at||0)<(party.at||0))return false;
-  party={hosts:c.hosts||[],registrars:(c.registrars||[]).map(x=>x.toLowerCase()),at:c.at||0,ev};
+  party={hosts:c.hosts||[],registrars:(c.registrars||[]).map(x=>x.toLowerCase()),at:c.at||0,ev,
+    hidden:(Array.isArray(c.hidden)?c.hidden:[]).filter(x=>typeof x==="string"&&/^[\w-]{1,80}$/.test(x))};
   lsSet("citizens-party",JSON.stringify(ev));return true;
 }
 try{takeParty(JSON.parse(lsGet("citizens-party")||"null"))}catch(e){}
@@ -634,7 +635,8 @@ function start(){if(started)return started;started=(async()=>{
   loadPending();let stT=null;listeners.push(()=>{if(stT)return;stT=setTimeout(()=>{stT=null;stampTick();flushBallots()},800)});setInterval(stampTick,60000);setTimeout(stampTick,500);
   window.CPAccount={closeBackable,cardHtml,me:()=>me,hosts:hostStatus,approve:approveScreen,synced:()=>membersSynced,
     unsent:d=>outbox.some(e=>tagOf(e,"d")===d), // a record of yours no host has confirmed yet
-    online:()=>[...relays.values()].filter(r=>r.ok).length,wasMember:()=>!!lsGet("citizens-hasrec-"+me)&&!(docVal("members/"+me)||{}).left,deleteAccount};
+    online:()=>[...relays.values()].filter(r=>r.ok).length,wasMember:()=>!!lsGet("citizens-hasrec-"+me)&&!(docVal("members/"+me)||{}).left,deleteAccount,
+    hidden:()=>party.hidden||[]}; // proposals the party hides for breaking its rules (signed party settings; the record keeps them)
   // remembered once this key has a member record, so a reload that can't reach the hosts never asks for an address
   const markRec=()=>{if(!lsGet("citizens-hasrec-"+me)&&docVal("members/"+me)&&!docVal("members/"+me).left)lsSet("citizens-hasrec-"+me,"1")};listeners.push(markRec);markRec();
   return{db,user,downloads,voter};

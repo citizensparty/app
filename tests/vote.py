@@ -143,6 +143,13 @@ async def main():
         await pg.screenshot(path=str(OUT / "vote-ignore.png"))
         await pg.eval_on_selector("[data-act=show-ign]", "e=>e.click()"); await pg.wait_for_timeout(300)
         check("Spam spam spam." in await pg.inner_text("#app"), "Show them brings it back")
+        # a proposal the party hides (signed party settings, tools/party.py hide): a placeholder instead of its words
+        await pg.evaluate("window.CPAccount={hidden:()=>['sim-ign1-x1']};__store['items/sim-ign1-x1'].z=1;__notify()"); await pg.wait_for_timeout(300)
+        txt = await pg.inner_text("#app")
+        check("Spam spam spam." not in txt and "Hidden by the party for breaking its rules." in txt, "a hidden proposal shows a placeholder, not its words")
+        await pg.evaluate(click, ["open-item", "sim-ign1-x1"]); await pg.wait_for_timeout(400)
+        check(await pg.locator("[data-act=report]").count() == 0, "...and has no Report link")
+        await pg.evaluate("window.CPAccount=undefined;__store['items/sim-ign1-x1'].z=2;__notify()"); await pg.wait_for_timeout(200)
         check(not errs, "no page errors %s" % errs)
         await b.close()
     if fails:
