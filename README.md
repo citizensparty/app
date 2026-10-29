@@ -40,3 +40,9 @@ Website: [citizensparty.ca](https://citizensparty.ca)
 Every record carries a protocol version tag (`["p","1"]`). The protocol is the record itself: its signatures, who
 may write what, and how votes are counted. Apps decide everything else, so anyone can build their own app on the same
 record. See `docs/strategy.md`.
+
+## License
+
+[GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). You may use, change and share this code, including to
+run your own app or host, as long as you publish your changes under the same license, also when you only run them as
+a service for others.
