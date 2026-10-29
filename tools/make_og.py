@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Make the social-media preview image (1200x630) at landing/og.png from the landing page's own map and colors.
+"""Make the social-media preview images (1200x630) in landing/ from the landing page's own map and colors:
+og.png for the site, and one per page listed in IMAGES (e.g. og-testers.png for /testers).
 
   python3 tools/make_og.py      (needs: pip install playwright && playwright install chromium)
 
@@ -9,10 +10,14 @@ otherwise it ships the committed landing/og.png.
 import pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / "landing/og.png"
+# file in landing/ -> (headline, line under it); *word* is drawn in the accent color
+IMAGES = {
+    "og.png": ("A party run by its members.", "British Columbia · citizensparty.ca"),
+    "og-testers.png": ("Testers *wanted.*", "Help get our app on Google Play.<br>citizensparty.ca/testers"),
+}
 
 
-def template():
+def template(title, sub):
     src = (ROOT / "landing/index.src.html").read_text(encoding="utf-8")
     css = src[src.index("<style>") + 7:src.index("</style>")]
     tokens = re.search(r":root\{.*?\n\}", css, re.S).group(0)  # the light theme's colors and fonts
@@ -32,8 +37,8 @@ p{{font-size:26px;color:var(--ink2);margin:26px 0 0}}
 .map{{width:100%;height:auto}}
 </style></head><body><div class="og"><div>
 <div class="brand">{mark}Citizens Party</div>
-<h1>A party run by its members.</h1>
-<p>British Columbia · citizensparty.ca</p>
+<h1>{re.sub(r"[*](.+?)[*]", r"<em>\1</em>", title)}</h1>
+<p>{sub}</p>
 </div><div>{svg}</div></div>
 <script>
 var cells=[].slice.call(document.querySelectorAll(".cellr")),seed=7;
@@ -47,16 +52,17 @@ def make():
     from playwright.sync_api import sync_playwright
     html = ROOT / "dist/og-template.html"
     html.parent.mkdir(exist_ok=True)
-    html.write_text(template(), encoding="utf-8")
     with sync_playwright() as p:
         b = p.chromium.launch()
         pg = b.new_page(viewport={"width": 1200, "height": 630}, color_scheme="light")
-        pg.goto(html.as_uri())
-        pg.wait_for_load_state("networkidle")
-        pg.wait_for_timeout(300)
-        pg.screenshot(path=str(OUT))
+        for name, (title, sub) in IMAGES.items():
+            html.write_text(template(title, sub), encoding="utf-8")
+            pg.goto(html.as_uri())
+            pg.wait_for_load_state("networkidle")
+            pg.wait_for_timeout(300)
+            pg.screenshot(path=str(ROOT / "landing" / name))
+            print("made landing/" + name)
         b.close()
-    print("made", OUT.relative_to(ROOT))
 
 
 if __name__ == "__main__":

@@ -122,6 +122,10 @@ PAGES = {
     "download": ("Get the app · Citizens Party", "Join your grid and vote from your phone.", "https://citizensparty.ca/download", 'class="btn pri sm" href="download.html"'),
 }
 
+OG_IMAGES = {
+    "testers": ("og-testers.png", "Citizens Party: testers wanted. A map of British Columbia divided into grids."),
+}
+
 PAGE_JS = """<script>
 (function(){
   var nav=document.getElementById("nav");
@@ -232,6 +236,10 @@ def build_pages(out):
         h = re.sub(r"<title>.*?</title>", "<title>" + esc(title) + "</title>", head, count=1)
         for prop, val in (("og:title", title), ("og:description", desc), ("og:url", url)):
             h = re.sub(r'<meta property="' + prop + '" content="[^"]*">', '<meta property="' + prop + '" content="' + esc(desc if prop == "og:description" else val).replace("'", "&#39;") + '">', h)
+        if name in OG_IMAGES:  # a page with its own preview image (tools/make_og.py)
+            img, alt = OG_IMAGES[name]
+            h = h.replace('content="https://citizensparty.ca/og.png"', 'content="https://citizensparty.ca/' + img + '"')
+            h = re.sub(r'<meta property="og:image:alt" content="[^"]*">', '<meta property="og:image:alt" content="' + esc(alt) + '">', h)
         h = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="' + esc(desc) + '">', h)
         h = h.replace('<link rel="canonical" href="https://citizensparty.ca/">', '<link rel="canonical" href="' + url + '">')
         if navsel:
@@ -316,8 +324,9 @@ def build_site():
         import make_og
         make_og.make()
     except Exception as e:
-        print("using the committed landing/og.png (" + e.__class__.__name__ + ")")
-    shutil.copy(ROOT / "landing/og.png", out / "og.png")
+        print("using the committed landing/og*.png (" + e.__class__.__name__ + ")")
+    for f in (ROOT / "landing").glob("og*.png"):
+        shutil.copy(f, out / f.name)
     shutil.copytree(ROOT / "landing/shots", out / "shots")  # app screenshots (tools/make_shots.py)
     build_pages(out)
     print("built", out)
