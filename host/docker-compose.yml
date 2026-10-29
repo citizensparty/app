@@ -1,0 +1,29 @@
+# Optional: the host in Docker, behind your own Cloudflare tunnel or Caddy. Most people just run the program.
+#   docker compose --profile tunnel up -d   # your Cloudflare tunnel (TUNNEL_TOKEN), pointed at http://host:7447
+#   docker compose --profile caddy up -d    # your own domain (DOMAIN) with ports 80/443 forwarded
+services:
+  host:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data
+    ports:
+      - "127.0.0.1:7447:7447"
+
+  caddy:
+    image: caddy:2
+    profiles: ["caddy"]
+    restart: unless-stopped
+    command: caddy reverse-proxy --from ${DOMAIN} --to host:7447
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy:/data
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}

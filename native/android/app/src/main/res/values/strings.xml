@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Citizens Party</string>
+    <string name="title_activity_main">Citizens Party</string>
+    <string name="package_name">ca.citizensparty.app</string>
+    <string name="custom_url_scheme">ca.citizensparty.app</string>
+</resources>

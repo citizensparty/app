@@ -1,0 +1,81 @@
+<!-- title: Run a host · Citizens Party -->
+<main id="top">
+  <section>
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">Run a host</div>
+        <h2>Keep a copy of the record.</h2>
+        <p>Citizens Party has no headquarters server. Members run small computers, called hosts, that each keep a full copy of every proposal and vote and share it with members' apps. If any one host goes offline or is shut down, the rest still have everything.</p>
+        <p class="mute small">We&#39;re in open beta, so setup takes a few more steps than it will later.</p>
+      </div>
+      <ul class="checks">
+        <li><span><b>Download, double-click, done.</b> No settings, no accounts, nothing to install. It finds the other hosts, copies the record and puts itself online through a free Cloudflare tunnel, so you don't open any ports and your home address stays private.</span></li>
+        <li><span><b>A host can't cheat.</b> Every record is signed on a member's phone. A host can't change or invent a vote, and members' apps check every signature themselves.</span></li>
+        <li><span><b>The network checks every host.</b> Before a new host is listed, the other hosts make sure it really holds the record. One that stops working is dropped, and members' apps test every host they use.</span></li>
+        <li><span><b>Small and cheap.</b> A home PC, a laptop that stays on, a Raspberry Pi or a $5 a month server is plenty.</span></li>
+      </ul>
+    </div>
+  </section>
+  <section class="band">
+    <div class="wrap">
+      <div class="sechd"><div class="k">Download</div><h2>About two minutes.</h2><p>Every download lists its SHA-256 fingerprint, so you can check it arrived intact. All of them: {{SUMS}}.</p></div>
+      <div class="dl two">
+        <div class="dlc">
+          <h3>Windows</h3>
+          {{HOSTWIN}}
+          <ol class="olist">
+            <li>Open the downloaded <b>citizens-host-windows.zip</b> and click <b>Extract all</b>, then <b>Extract</b>.</li>
+            <li>In the folder that opens, double-click <b>citizens-host.exe</b>.</li>
+            <li>Windows will probably show a blue box: <i>"Windows protected your PC."</i> Click <b>More info</b>, then <b>Run anyway</b>. It warns because the program isn&#39;t signed yet (signing costs money, and we&#39;re working on a free way), not because anything is wrong with it.</li>
+            <li>If Chrome stops the download first, click the download, then <b>Keep</b> (or <b>Download suspicious file</b>).</li>
+            <li>Leave the window open. It shows how many members are connected. Closing it stops the host.</li>
+          </ol>
+        </div>
+        <div class="dlc">
+          <h3>A Linux server</h3>
+          <p class="mute">On a cloud server or a Raspberry Pi, one command installs it as a service that starts itself after a reboot:</p>
+          {{CMD_INSTALL}}
+          <p class="mute small">Prefer to read it first?</p>
+          {{CMD_READFIRST}}
+          <p class="mute small">Run it again to update. This shows the live status screen:</p>
+          {{CMD_STATUS}}
+        </div>
+        <div class="dlc">
+          <h3>Linux, by hand</h3>
+          {{HOSTLINUX}}
+          <ol class="olist">
+            <li>Unpack it:{{CMD_TAR}}</li>
+            <li>Start it:{{CMD_RUN}}</li>
+            <li>Leave it running. It shows how many members are connected. Ctrl+C stops it.</li>
+          </ol>
+        </div>
+        <div class="dlc">
+          <h3>Docker: Mac, Windows, Linux</h3>
+          <p class="mute">There's no Mac program yet: on a Mac, use Docker. It works the same on Windows and Linux.</p>
+          {{COMPOSE}}
+          <ol class="olist">
+            <li>Put the file in a new folder, open a terminal there and start it:{{CMD_COMPOSE}}</li>
+            <li>The live status screen:{{CMD_COMPOSE_STATUS}}</li>
+            <li>To update:{{CMD_COMPOSE_UPDATE}}</li>
+          </ol>
+          <p class="mute small">The record and your host's key stay in the <code>data</code> folder next to the file, so updates keep them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <div class="sechd"><div class="k">Keep it running</div><h2>Once it's up.</h2></div>
+      <div class="keep">
+        <div><h3>Your data</h3><p class="mute">Your records and your host's key are kept in the <code>data</code> folder next to the program (on a server: <code>/var/lib/citizens-host</code>). Back it up if you move computers.</p></div>
+        <div><h3>Start with Windows</h3><p class="mute">Press Win+R, type this, press Enter, and put a shortcut to the program in the folder that opens:</p>{{CMD_STARTUP}}</div>
+        <div><h3>A fixed address</h3><p class="mute">Want your own domain instead of a quick tunnel? See the README in the Linux download, or <a href="mailto:admin@citizensparty.ca?subject=Running%20a%20host">ask us</a>.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="band">
+    <div class="wrap">
+      {{PARTY}}
+    </div>
+  </section>
+</main>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tor addresses (.onion) use ws://: Tor itself encrypts them end to end and proves which host answers,
+     so there's no certificate to check (TorPlugin.java). Everything else stays encrypted-only. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">onion</domain>
+    </domain-config>
+</network-security-config>

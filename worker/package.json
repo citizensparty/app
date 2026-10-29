@@ -1,0 +1,16 @@
+{
+  "name": "citizensparty-site",
+  "private": true,
+  "description": "The citizensparty.ca Worker: serves dist/site and the host directory (/hosts.json, /api/hosts).",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@noble/curves": "2.4.0",
+    "@noble/hashes": "2.4.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.152.0"
+  }
+}

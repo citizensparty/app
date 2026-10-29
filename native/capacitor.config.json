@@ -1,0 +1,13 @@
+{
+  "appId": "ca.citizensparty.app",
+  "appName": "Citizens Party",
+  "webDir": "www",
+  "backgroundColor": "#0F6E66",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

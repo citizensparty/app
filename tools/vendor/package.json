@@ -1,0 +1,14 @@
+{
+  "name": "citizensparty-vendor",
+  "private": true,
+  "description": "Builds app/vendor/nostr.js (keys, signatures, recovery phrases). Run: npm ci && npm run build",
+  "scripts": {
+    "build": "esbuild entry.js --bundle --minify --format=iife --global-name=CPNostr --outfile=../../app/vendor/nostr.js"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "esbuild": "0.28.2",
+    "nostr-tools": "2.25.2",
+    "qrcode-generator": "2.0.4"
+  }
+}

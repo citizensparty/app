@@ -1,0 +1,22 @@
+# The citizensparty.ca Worker: the static site (dist/site, built by tools/build.py) plus the host directory.
+# Deploy: python3 tools/deploy.py   (builds, then runs wrangler deploy)
+name = "falling-grass-0abf"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+routes = [{ pattern = "citizensparty.ca", custom_domain = true }]
+
+[assets]
+directory = "../dist/site"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "citizens-hosts"
+database_id = "56ce5984-56e7-4fb4-83de-424600a95de2" # replaced by tools/deploy.py on first deploy
+
+[triggers]
+crons = ["*/30 * * * *"]
+
+[vars]
+HOST_CAP = "10000"

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Citizens Party</title>
+<meta name="theme-color" content="#0F6E66">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Citizens">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="hdr pad"><div class="hdr-top"><div class="brand">Citizens Party<small>Grid-based direct democracy · beta</small></div></div></header>
+  <main class="main pad"><div class="card"><h2>Loading…</h2><p class="lede">Connecting to the shared record.</p></div></main>
+</div>
+<nav class="tabs" id="tabs" hidden></nav>
+<script src="vendor/nostr.js"></script>
+<script src="config.js"></script>
+<script src="adapter-local.js"></script>
+<script src="adapter-nostr.js"></script>
+<script src="app.js"></script>
+<script>if("serviceWorker"in navigator&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!-- title: Constitution · Citizens Party -->
+<style>
+.cx section{padding:56px 0}
+.cx .lead{font-size:clamp(18px,2.2vw,21px);color:var(--ink2);max-width:40em;margin-top:14px}
+.cx h3{font-size:20px;font-weight:800}
+.cx .note{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.cx .note.soon{background:color-mix(in srgb,var(--warn) 20%,transparent);color:color-mix(in srgb,var(--warn) 55%,var(--ink))}
+.cx .fig{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;min-width:0}
+.band .fig{background:var(--bg)}
+.cx .cap{font-size:14px;color:var(--mute);margin-top:12px}
+/* two ways to keep rules: side-by-side flows */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.flow{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.flow h3{margin-bottom:14px}
+.step{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.band .step{background:var(--bg)}
+.step .ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--line);color:var(--ink2)}
+.ours .step .ic{background:var(--accent-soft);color:var(--accent)}
+.step .ic svg{width:20px;height:20px}
+.step p{color:var(--ink2);font-size:15px}
+.step b{color:var(--ink)}
+.arrow{height:22px;display:grid;place-items:center;color:var(--mute)}
+.arrow::before{content:"";width:2px;height:12px;background:currentColor}
+.arrow::after{content:"";border:6px solid transparent;border-top:7px solid currentColor;border-bottom:0;margin-top:-1px}
+.arrow{grid-template-rows:12px 7px;align-content:center}
+.ours .arrow{color:var(--accent)}
+.flow .end{margin-top:12px;font-size:15px;font-weight:700}
+.theirs .end{color:var(--mute)}.ours .end{color:var(--accent)}
+/* articles */
+.arts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;counter-reset:art}
+.art{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.art .n{font:800 13px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.art p{color:var(--ink2);font-size:16px}
+.art .how{border-top:1px dashed var(--line);padding-top:10px;font-size:15px}
+.art .how b{color:var(--accent)}
+/* charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font-family:var(--body);fill:var(--ink2)}
+.chart .lbl{font-size:15px}
+.chart .val{font:700 16px var(--body);fill:var(--ink)}
+.timeline{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:0;margin-top:6px}
+.tl{padding:12px 14px;border-radius:0;font-size:15px}
+.tl b{display:block;font-family:var(--display);font-size:16px;color:var(--ink)}
+.tl span{color:var(--ink2)}
+.tl.a{background:var(--accent-soft);border-radius:12px 0 0 12px}
+.tl.b{background:color-mix(in srgb,var(--accent) 28%,var(--surface))}
+.tl.c{background:var(--accent);border-radius:0 12px 12px 0}
+.tl.c b,.tl.c span{color:var(--on-accent)}
+.ticks{display:grid;grid-template-columns:1fr 1.3fr 1fr;font-size:13px;color:var(--mute);margin-top:6px}
+.ticks span:last-child{padding-left:14px}
+/* who holds what */
+.pw{width:100%;border-collapse:separate;border-spacing:0;font-size:15px}
+.pw th,.pw td{padding:12px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.pw th:first-child,.pw td:first-child{text-align:left}
+.pw thead th{font:700 13px var(--body);color:var(--mute);vertical-align:bottom}
+.pw td:first-child b{display:block;color:var(--ink)}
+.pw td:first-child span{color:var(--mute);font-size:13px}
+.pw tr:last-child td{border-bottom:0}
+.dot2{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--accent)}
+.dot2.no{background:transparent;border:2px solid var(--line)}
+.pwrap{overflow-x:auto}
+@media (max-width:860px){
+  .pw thead{display:none}
+  .pw,.pw tbody,.pw tr,.pw td{display:block}
+  .pw tr{padding:12px 0;border-bottom:1px solid var(--line)}.pw tr:last-child{border-bottom:0}
+  .pw td{border:0;padding:5px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .pw td:first-child{display:block;padding-bottom:8px}
+  .pw td[data-l]::before{content:attr(data-l);color:var(--ink2);text-align:left}
+  .pw td:first-child span{display:block}
+}
+.never{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.never span{font-size:15px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2)}
+.never span::before{content:"✕  ";color:#C0392B;font-weight:700}
+/* risks */
+.risks{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.risk{border-left:4px solid var(--warn);background:var(--surface);border-radius:4px 14px 14px 4px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.band .risk{background:var(--bg)}
+.risk p{color:var(--ink2);font-size:16px}
+.risk .fix{font-size:15px}.risk .fix b{color:var(--accent)}
+/* key plan */
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;margin-top:8px}
+.plan::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:3px;background:var(--line)}
+.ph{position:relative;padding-right:16px;display:flex;flex-direction:column;gap:8px}
+.ph .bub{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--display);background:var(--surface);border:3px solid var(--line);color:var(--mute);position:relative}
+.ph.now .bub{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ph .note{align-self:flex-start}
+.ph h3{font-size:17px;margin-top:4px}
+.ph p{color:var(--ink2);font-size:15px}
+/* what if */
+.ifs{display:flex;flex-direction:column;gap:16px}
+.if{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px minmax(0,1fr);align-items:stretch;gap:0}
+.if .box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:15px;color:var(--ink2)}
+.band .if .box{background:var(--bg)}
+.if .box b{display:block;color:var(--ink);font-family:var(--display);font-size:16px;margin-bottom:4px}
+.if .box.bad{border-color:color-mix(in srgb,#C0392B 45%,var(--line))}
+.if .box.good{border-color:var(--accent);background:var(--accent-soft)}
+.if .go{display:grid;place-items:center;color:var(--mute)}
+.if .go svg{width:22px;height:22px}
+@media (max-width:860px){
+  .vs,.arts,.charts,.risks{grid-template-columns:1fr}
+  .ifs{gap:32px}.if{grid-template-columns:1fr}
+  .if .go{height:30px}.if .go svg{transform:rotate(90deg)}
+  .plan{grid-template-columns:1fr;gap:18px}
+  .plan::before{left:17px;right:auto;top:18px;bottom:18px;width:3px;height:auto}
+  .ph{padding-left:52px;padding-right:0}
+  .ph .bub{position:absolute;left:0;top:0}
+  .ph h3{margin-top:6px}
+  .timeline,.ticks{grid-template-columns:1fr}
+  .tl.a{border-radius:12px 12px 0 0}.tl.c{border-radius:0 0 12px 12px}
+  .ticks{display:none}
+}
+</style>
+<main id="top" class="cx">
+  <section>
+    <div class="wrap">
+      <div class="sechd" style="max-width:760px;margin-bottom:0">
+        <div class="k">Our constitution</div>
+        <h2>Most constitutions are written on paper. Ours is built into the app.</h2>
+        <p class="lead">A normal constitution says what <i>should</i> happen, then counts on judges to step in when someone breaks the rules, often years later. Our rules are part of the app every member uses. The app simply won&#39;t let anyone break them, and if someone tries to change things behind the scenes, every copy of the record shows it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="sechd"><div class="k">Two ways to keep rules</div><h2>Paper and judges, or rules that enforce themselves.</h2></div>
+      <div class="vs">
+        <div class="fig flow theirs">
+          <h3>A usual constitution</h3>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></span><p><b>The rules are written down.</b> On paper, in a binder.</p></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 3-5.5 6-5.5s6 2 6 5.5M15 15c3 0 6 1.5 6 4.5"/></svg></span><p><b>People in charge are trusted to follow them.</b> Nothing stops them from doing otherwise.</p></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 21h14M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></svg></span><p><b>If someone breaks a rule, a judge decides.</b> That takes money, lawyers and time.</p></div>
+          <p class="end">The rule wins only after the damage is done.</p>
+        </div>
+        <div class="fig flow ours">
+          <h3>Our constitution</h3>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg></span><p><b>The rules are built into the app.</b> Every member&#39;s app has the same rules.</p></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><p><b>The app won&#39;t let anyone break them.</b> There&#39;s no button to expel a member, change a vote or skip a step.</p></div>
+          <div class="arrow" aria-hidden="true"></div>
+          <div class="step"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/></svg></span><p><b>Members keep copies of everything.</b> A change made in one place won&#39;t match the others, so everyone can see it.</p></div>
+          <p class="end">The rule holds from the start, and nobody needs a lawyer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechd"><div class="k">The rules</div><h2>What the constitution says, and how the app makes it happen.</h2></div>
+      <div class="arts">
+        <div class="art"><span class="n">Article 1</span><h3>Members are the final say.</h3><p>Every decision is made by a member vote. No leader, board or office can overrule it.</p><p class="how"><b>In the app:</b> there&#39;s no admin button that overrides a vote. A result is worked out by every member&#39;s app from the votes themselves.</p></div>
+        <div class="art"><span class="n">Article 2</span><h3>Nobody can be pushed out.</h3><p>No one can expel a member. Joining is an agreement: a member who doesn&#39;t keep the responsibilities in this constitution gives up their own membership. That&#39;s a condition everyone agreed to, not a punishment.</p><p class="how"><b>In the app:</b> there&#39;s no way to remove a member, not even for the party. Today the one responsibility is voting on required votes. Miss one and you sit out for 72 hours.</p></div>
+        <div class="art"><span class="n">Article 3</span><h3>Only the people who elect someone can remove them.</h3><p>Anyone elected can be recalled at any time, but only by the members who elected them.</p><p class="how"><span class="note soon">Coming</span> <b>In the app:</b> elections and recalls are built and switched on once members start electing leads. Only the members who could vote in an election will see its recall vote.</p></div>
+        <div class="art"><span class="n">Article 4</span><h3>Everything is public, except how you voted.</h3><p>Every proposal, result and party message is public. There&#39;s no inner circle and no private channel. Your own ballot is secret.</p><p class="how"><b>In the app:</b> anyone can read the whole record. Ballots are cast with a separate voting key that nobody can trace back to you, not even the party.</p></div>
+        <div class="art"><span class="n">Article 5</span><h3>One member, one vote.</h3><p>Every member gets exactly one vote on each question, and nobody can vote for you or change your vote.</p><p class="how"><b>In the app:</b> your phone signs your vote with your key before it leaves. Every three months each member gets one voting stamp, so a second ballot won&#39;t count.</p></div>
+        <div class="art"><span class="n">Article 6</span><h3>Neighborhoods decide first.</h3><p>Members belong to the neighborhood they live in. Each neighborhood sets up to 10 principles of its own, then can send one to all of BC.</p><p class="how"><b>In the app:</b> BC is split into about 120 neighborhoods (the app calls them grids). The charts below show how a proposal becomes a decision.</p></div>
+        <div class="art"><span class="n">Article 7</span><h3>No fees, ever.</h3><p>Membership is free. Your voice doesn&#39;t depend on your wallet.</p><p class="how"><b>In the app:</b> there&#39;s no payment anywhere. The party pays only for its website.</p></div>
+        <div class="art"><span class="n">Article 8</span><h3>No off switch.</h3><p>The record isn&#39;t kept in one place, so no one can shut the party down or lose its history.</p><p class="how"><b>In the app:</b> members run computers called hosts that each keep a full copy. Anyone can run one, <a href="host.html">on any computer</a>.</p></div>
+      </div>
+      <p class="cap">During the beta, two waits are switched off so people can try everything: new members can vote right away (normally after 72 hours), and neighborhoods can vote with fewer than 20 members.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="sechd"><div class="k">How a proposal becomes a decision</div><h2>Supporters first, then a vote, all in 72 hours.</h2><p>Any member can propose a principle. Each proposal has 72 hours in total. In that time it needs enough supporters to go to a full vote, and a majority to pass.</p></div>
+      <div class="fig">
+        <div class="timeline" role="img" aria-label="One 72-hour window: first it gathers supporters, then the whole neighborhood votes, and at hour 72 it's Passed, Rejected or Expired.">
+          <div class="tl a"><b>Gathering supporters</b><span>Yes votes from 5% of the neighborhood, at least 5.</span></div>
+          <div class="tl b"><b>The full vote</b><span>Every member of the neighborhood is asked. It closes early once everyone has voted.</span></div>
+          <div class="tl c"><b>Result</b><span>Passed, Rejected, or Expired if it never got enough supporters</span></div>
+        </div>
+        <div class="ticks" aria-hidden="true"><span>Hour 0</span><span>Supporters reached</span><span>Hour 72</span></div>
+        <p class="cap">Results stay hidden until at least 5 people have voted, so nobody can work out how a small group voted.</p>
+      </div>
+      <div class="charts">
+        <div class="fig chart">
+          <h3>How much support a proposal needs</h3>
+          <p class="cap" style="margin:6px 0 14px">5% of the neighborhood, and never fewer than 5 people (or everyone, in a smaller neighborhood).</p>
+          <svg viewBox="0 0 360 230" role="img" aria-label="Bar chart. Neighborhood of 20 members needs 5 supporters; 50 needs 5; 100 needs 5; 200 needs 10; 500 needs 25.">
+            <g transform="translate(40,10)">
+              <line x1="0" y1="180" x2="310" y2="180" stroke="var(--line)" stroke-width="2"/>
+              <g fill="var(--accent)">
+                <rect x="10" y="144" width="42" height="36" rx="4"/>
+                <rect x="72" y="144" width="42" height="36" rx="4"/>
+                <rect x="134" y="144" width="42" height="36" rx="4"/>
+                <rect x="196" y="108" width="42" height="72" rx="4"/>
+                <rect x="258" y="0" width="42" height="180" rx="4"/>
+              </g>
+              <g class="val" text-anchor="middle">
+                <text x="31" y="136">5</text><text x="93" y="136">5</text><text x="155" y="136">5</text><text x="217" y="100">10</text><text x="279" y="22" style="fill:var(--on-accent)">25</text>
+              </g>
+              <g class="lbl" text-anchor="middle">
+                <text x="31" y="200">20</text><text x="93" y="200">50</text><text x="155" y="200">100</text><text x="217" y="200">200</text><text x="279" y="200">500</text>
+                <text x="155" y="220">members in the neighborhood</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="fig chart">
+          <h3>Sending a principle to all of BC</h3>
+          <p class="cap" style="margin:6px 0 14px">Two steps. Both need more than half, and at least 5 neighborhoods must take part.</p>
+          <svg viewBox="0 0 360 230" role="img" aria-label="Step 1: more than half of the neighborhood's members vote Yes. Step 2: at least 5 neighborhoods take part, and more than half of all neighborhoods agree.">
+            <g font-family="var(--body)">
+              <text x="0" y="18" class="val">1. Your neighborhood</text>
+              <text x="0" y="38" class="lbl">More than half of all its members vote Yes</text>
+              <g transform="translate(0,52)">
+                <rect width="360" height="26" rx="6" fill="var(--line)"/>
+                <rect width="205" height="26" rx="6" fill="var(--accent)"/>
+                <line x1="180" y1="-6" x2="180" y2="32" stroke="var(--ink)" stroke-width="2" stroke-dasharray="4 3"/>
+                <text x="184" y="46" class="lbl">half</text>
+              </g>
+              <text x="0" y="132" class="val">2. All of BC</text>
+              <text x="0" y="152" class="lbl">Each square is one neighborhood</text>
+              <g transform="translate(0,164)">
+                <g fill="var(--accent)">
+                  <rect x="0" y="0" width="20" height="20" rx="4"/><rect x="24" y="0" width="20" height="20" rx="4"/><rect x="48" y="0" width="20" height="20" rx="4"/><rect x="72" y="0" width="20" height="20" rx="4"/><rect x="96" y="0" width="20" height="20" rx="4"/><rect x="120" y="0" width="20" height="20" rx="4"/><rect x="144" y="0" width="20" height="20" rx="4"/>
+                  <rect x="0" y="24" width="20" height="20" rx="4"/><rect x="24" y="24" width="20" height="20" rx="4"/><rect x="48" y="24" width="20" height="20" rx="4"/><rect x="72" y="24" width="20" height="20" rx="4"/><rect x="96" y="24" width="20" height="20" rx="4"/><rect x="120" y="24" width="20" height="20" rx="4"/>
+                </g>
+                <g fill="none" stroke="var(--line)" stroke-width="2">
+                  <rect x="169" y="1" width="18" height="18" rx="4"/><rect x="193" y="1" width="18" height="18" rx="4"/><rect x="217" y="1" width="18" height="18" rx="4"/><rect x="241" y="1" width="18" height="18" rx="4"/><rect x="265" y="1" width="18" height="18" rx="4"/>
+                  <rect x="145" y="25" width="18" height="18" rx="4"/><rect x="169" y="25" width="18" height="18" rx="4"/><rect x="193" y="25" width="18" height="18" rx="4"/><rect x="217" y="25" width="18" height="18" rx="4"/><rect x="241" y="25" width="18" height="18" rx="4"/><rect x="265" y="25" width="18" height="18" rx="4"/>
+                </g>
+                <text x="296" y="16" class="lbl">13 of 24</text>
+                <text x="296" y="38" class="lbl">agree</text>
+              </g>
+            </g>
+          </svg>
+          <p class="cap">If the neighborhood that sent it rewords or removes the principle, the BC-wide vote is cancelled.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechd"><div class="k">Who holds what power</div><h2>Power is split up, and most of it belongs to members.</h2></div>
+      <div class="fig pwrap">
+        <table class="pw">
+          <thead><tr><th></th><th>Propose and vote</th><th>Keep copies of the record</th><th>Let new members in</th><th>Change the party&#39;s settings</th></tr></thead>
+          <tbody>
+            <tr><td><b>Members</b><span>Everyone who joined</span></td><td data-l="Propose and vote"><span class="dot2" aria-label="yes"></span></td><td data-l="Keep copies of the record"><span class="dot2" aria-label="yes"></span></td><td data-l="Let new members in"><span class="dot2 no" aria-label="no"></span></td><td data-l="Change the party&#39;s settings"><span class="dot2 no" aria-label="no"></span></td></tr>
+            <tr><td><b>Hosts</b><span>Computers anyone can run</span></td><td data-l="Propose and vote"><span class="dot2 no" aria-label="no"></span></td><td data-l="Keep copies of the record"><span class="dot2" aria-label="yes"></span></td><td data-l="Let new members in"><span class="dot2 no" aria-label="no"></span></td><td data-l="Change the party&#39;s settings"><span class="dot2 no" aria-label="no"></span></td></tr>
+            <tr><td><b>Registrars</b><span>A few computers the party runs</span></td><td data-l="Propose and vote"><span class="dot2 no" aria-label="no"></span></td><td data-l="Keep copies of the record"><span class="dot2 no" aria-label="no"></span></td><td data-l="Let new members in"><span class="dot2" aria-label="yes"></span></td><td data-l="Change the party&#39;s settings"><span class="dot2 no" aria-label="no"></span></td></tr>
+            <tr><td><b>The party key</b><span>One secret key, kept offline</span></td><td data-l="Propose and vote"><span class="dot2 no" aria-label="no"></span></td><td data-l="Keep copies of the record"><span class="dot2 no" aria-label="no"></span></td><td data-l="Let new members in"><span class="dot2" aria-label="yes"></span></td><td data-l="Change the party&#39;s settings"><span class="dot2" aria-label="yes"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cap">After the beta, registrars will check each new member&#39;s ID, so every member is one real person. During the beta they let everyone in. The party key decides which registrars count and sets things like how long a vote lasts.</p>
+      <h3 style="margin-top:28px">What nobody can do, not even the party</h3>
+      <div class="never"><span>Change your vote</span><span>Vote as you</span><span>See how you voted</span><span>Expel you</span><span>Delete the record</span><span>Charge you a fee</span></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="sechd"><div class="k">The risks, honestly</div><h2>No system is perfect. Here&#39;s where ours could fail.</h2><p>We&#39;d rather you hear it from us than find it later.</p></div>
+      <div class="risks">
+        <div class="risk"><h3>Whoever holds the party key can change things.</h3><p>The party key can choose the registrars and change the party&#39;s settings. If the wrong person got it, they could let in fake members, who could then outvote real ones.</p><p class="fix"><b>What protects you:</b> everything the key signs is public, so a change can&#39;t be hidden. The key is kept on paper and never on a computer that&#39;s always online. Below is the plan to hand it over.</p></div>
+        <div class="risk"><h3>Registrars decide who gets in.</h3><p>A registrar could let in people who shouldn&#39;t be members, or keep out people who should.</p><p class="fix"><b>What protects you:</b> every approval is public and signed by the registrar that made it. A bad registrar can be removed, and every app stops trusting it.</p></div>
+        <div class="risk"><h3>The rules are only as good as the app.</h3><p>Since the app is the constitution, whoever writes the app writes the rules. Today, changing a rule means releasing a new version of the app.</p><p class="fix"><b>What protects you:</b> the app&#39;s code will be public at launch, so anyone can read it and check that it does what this page says.</p></div>
+        <div class="risk"><h3>The website could go away.</h3><p>citizensparty.ca is where new members get the app and where apps first find the hosts. A web address can be lost or forgotten.</p><p class="fix"><b>What protects you:</b> apps and hosts already know each other without it, and both can be pointed at a new address.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechd"><div class="k">The party key</div><h2>The plan: hand the key to people who answer to the members.</h2></div>
+      <div class="plan">
+        <div class="ph now"><span class="bub">1</span><span class="note">Now</span><h3>The founder holds it</h3><p>Written on paper and kept in a safe. Used only to sign the party&#39;s settings, never left on a phone or a computer that&#39;s always on.</p></div>
+        <div class="ph"><span class="bub">2</span><span class="note soon">Next</span><h3>Law firms hold it in trust</h3><p>One or more law firms keep the key on behalf of the members. They use it only to carry out what the members vote for.</p></div>
+        <div class="ph"><span class="bub">3</span><span class="note soon">Always</span><h3>Members can start over</h3><p>If the key is ever misused, members don&#39;t need the key holder&#39;s permission to carry on. See below.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="sechd"><div class="k">The backup plan</div><h2>If something goes badly wrong.</h2><p>The party&#39;s whole record is public and copied many times, and the app&#39;s code will be public too. Members always have what they need to set the party up again.</p></div>
+      <div class="ifs">
+        <div class="if">
+          <div class="box bad"><b>The party key is lost</b>The paper is destroyed and there&#39;s no copy.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box"><b>Voting carries on</b>Members can still propose and vote. Only the settings and the list of registrars are stuck as they are.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box good"><b>A new key</b>A new version of the app and the host program is released with a new key. Members keep their same 12 words and the whole record.</div>
+        </div>
+        <div class="if">
+          <div class="box bad"><b>The key is stolen, or the party is taken over</b>For example, a group that&#39;s against everything the party stands for gets control of the key and starts changing the rules.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box"><b>Everyone can see it</b>Every change the key makes is public and dated, so members know exactly what happened and when.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box good"><b>Members start a new copy</b>The code is public, so members can set up the party again with a new key, starting from the same record of every vote up to the takeover.</div>
+        </div>
+        <div class="if">
+          <div class="box bad"><b>citizensparty.ca is lost</b>Someone forgets to renew it, or it&#39;s taken.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box"><b>The apps keep working</b>Every app and host already knows where the other hosts are, so voting carries on.</div>
+          <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
+          <div class="box good"><b>Point the app somewhere new</b>In the app, Me, then Hosts, then Party website: Change. A fake site can&#39;t take over, because the settings still have to be signed with the party key.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sechd" style="margin-bottom:0"><div class="k">Changing the constitution</div><h2>Today, by a new version of the app.</h2><p>For now, the rules change when the party releases a new version of the app. The code will be public, so anyone can see exactly what changed and when.</p>
+      <p style="margin-top:22px"><a class="btn pri" href="download.html">Get the app</a></p></div>
+    </div>
+  </section>
+</main>

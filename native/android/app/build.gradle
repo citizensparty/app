@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+
+// Version comes from native/package.json ("0.1.0" -> versionName 0.1.0, versionCode 100).
+def pkg = new groovy.json.JsonSlurper().parse(file('../../package.json'))
+def appVersion = pkg.version
+def vParts = appVersion.tokenize('.-')
+def appVersionCode = vParts[0].toInteger() * 10000 + vParts[1].toInteger() * 100 + vParts[2].toInteger()
+
+// Release signing: tools/build_native.sh exports these from ~/.citizensparty/android-keystore.env.
+// The keystore and its password never live in the repo.
+def ksFile = System.getenv('CP_KEYSTORE')
+
+android {
+    namespace = "ca.citizensparty.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "ca.citizensparty.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode appVersionCode
+        versionName appVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Tor comes as one copy per processor type. Phones are ARM; the Intel copies are only for emulators
+        // (build with -PallAbis to include them). Keeps the APK under Cloudflare's 25 MB file limit.
+        ndk {
+            if (!project.hasProperty('allAbis')) abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        if (ksFile) {
+            release {
+                storeFile file(ksFile)
+                storePassword System.getenv('CP_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('CP_KEY_ALIAS')
+                keyPassword System.getenv('CP_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (ksFile) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    // Tor for ballots (TorPlugin.java): the Guardian Project's build of Tor, and OkHttp to talk through it
+    implementation "info.guardianproject:tor-android:0.4.9.14" // built with Java 24, so tools/build_native.sh uses JDK 24
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

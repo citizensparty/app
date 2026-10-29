@@ -1,0 +1,28 @@
+{
+  "owners": [
+    "4526e5346c39903fd8a1f2e5b50ad141b364d7616f377d5e35abadee0f1821ef"
+  ],
+  "registrars": [
+    "cddd10bb6b618e5d632b90e9b318bad81fc87f3f3696e7e617e415042808eedf",
+    "1e048ef30b45646637445f4f0a50833f19201938a5e9748ff5307b7df38f3e96",
+    "08580ee7ae22a9e2f26a4fc65043bbfba54778c3b596fea7bbf681d9a15852e0",
+    "ec5b7ee612b3bdd2df417a51dee1dbdb9a4b6198b6373c1fda0301f9fd6ea1e5"
+  ],
+  "hosts": [
+    {
+      "url": "wss://host1.citizensparty.ca",
+      "pubkey": "841d252bf77682a83ec04e8ac1d1591b371b6129d7e10ea12ed58e84861f1cdf",
+      "name": "Citizens Party host 1 (Oregon)"
+    },
+    {
+      "url": "wss://host2.citizensparty.ca",
+      "pubkey": "827d785afed40ce258bc3359ae8443ee83aa4ae0898cd1b3f76c74251ab39f01",
+      "name": "Citizens Party host 2 (Montreal)"
+    },
+    {
+      "url": "wss://host3.citizensparty.ca",
+      "pubkey": "786998f1077b7b34d745faec54f6d20ca00200fc2b4640f120b1c523d82c08d6",
+      "name": "Citizens Party host 3 (Toronto)"
+    }
+  ]
+}

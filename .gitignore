@@ -1,0 +1,30 @@
+.env
+dist/
+tests/out/
+__pycache__/
+node_modules/
+/android/
+/ios/
+*.apk
+
+# native (Capacitor): native/android and native/ios are committed; build outputs are not
+native/node_modules/
+native/www/
+native/android/.gradle/
+native/android/build/
+native/android/app/build/
+native/android/local.properties
+native/ios/App/build/
+native/ios/DerivedData/
+.gradle/
+*.jks
+*.keystore
+
+# Go host builds
+/host/host
+/host/citizens-host
+/host/citizens-host.exe
+/host/data/
+
+# project notes for Claude Code: kept locally, not in the repo
+CLAUDE.md

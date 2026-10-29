@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Citizens Party · Run by its members</title>
+<meta name="description" content="Citizens Party is a participatory party for British Columbia. Members propose, vote on and decide everything in our own neighborhoods. No board, no backroom, no fees.">
+<meta name="theme-color" content="#0F6E66">
+<link rel="canonical" href="https://citizensparty.ca/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Citizens Party">
+<meta property="og:title" content="Citizens Party">
+<meta property="og:description" content="Citizens Party is a participatory party for British Columbia. Members propose, vote on and decide everything, from what we stand for to who speaks for us, in our own neighborhoods. No board. No backroom. No fees.">
+<meta property="og:url" content="https://citizensparty.ca/">
+<meta property="og:image" content="https://citizensparty.ca/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Citizens Party: a party run by its members. A map of British Columbia divided into grids.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F6E66'/%3E%3Cg fill='%23fff'%3E%3Crect x='7' y='7' width='8' height='8' rx='1.5'/%3E%3Crect x='17' y='7' width='8' height='8' rx='1.5' opacity='.55'/%3E%3Crect x='7' y='17' width='8' height='8' rx='1.5' opacity='.55'/%3E%3Crect x='17' y='17' width='8' height='8' rx='1.5'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F6F5;--surface:#FFFFFF;--ink:#12201E;--ink2:#4A5A57;--mute:#7F8E8B;--line:#DCE4E2;
+  --accent:#0F6E66;--accent-2:#0B5650;--accent-soft:#E1EFEC;--on-accent:#FFFFFF;--warn:#E8A33D;
+  --land:#D5E0DC;--grid:#B9C8C3;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1513;--surface:#16201E;--ink:#E6EEEC;--ink2:#AEBDBA;--mute:#7C8C89;--line:#26332F;
+  --accent:#4FB8AC;--accent-2:#6CCBC0;--accent-soft:#163430;--on-accent:#06201D;
+  --land:#25332F;--grid:#3A4B47;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1513;--surface:#16201E;--ink:#E6EEEC;--ink2:#AEBDBA;--mute:#7C8C89;--line:#26332F;
+  --accent:#4FB8AC;--accent-2:#6CCBC0;--accent-soft:#163430;--on-accent:#06201D;
+  --land:#25332F;--grid:#3A4B47;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+.cta-const{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:28px;padding:22px 24px;border-radius:16px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);text-decoration:none;color:var(--ink)}
+.cta-const>span:first-child{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cta-const b{font:800 20px/1.2 var(--display)}
+.cta-const>span:first-child>span{color:var(--ink2);font-size:16px}
+.cta-const .btn{flex:none}
+.cta-const:hover .btn{background:var(--accent-2)}
+@media (max-width:700px){.cta-const{flex-direction:column;align-items:stretch}.cta-const .btn{width:100%}}
+/* feedback */
+.fbwrap{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start}
+.fbform{display:flex;flex-direction:column;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px}
+.fbform label{font-weight:700;font-size:15px}
+.fbform textarea,.fbform input{width:100%;font:16px/1.45 var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.fbform textarea{resize:vertical;min-height:120px}
+.fbform textarea:focus,.fbform input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.fbrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fbrow>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fbform .btn{align-self:flex-start;margin-top:4px}.fbst{margin:0;min-height:1.2em}.fbst.ok{color:var(--accent);font-weight:700}.fbst.bad{color:#C0392B}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sel{user-select:all;color:var(--ink)}
+@media (max-width:860px){.fbwrap{grid-template-columns:1fr;gap:24px}.fbrow{grid-template-columns:1fr}}
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+.nav.scrolled{border-bottom-color:var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:800 19px var(--display)}
+.mark{width:30px;height:30px;flex:none}
+.navlinks{display:flex;gap:22px;margin-left:auto}
+.navlinks a{color:var(--ink2);text-decoration:none;font-weight:700;font-size:15px}
+.navlinks a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;font:700 16px var(--body);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:background .15s,transform .15s}
+.btn.pri{background:var(--accent);color:var(--on-accent)}
+.btn.pri:hover{background:var(--accent-2)}
+.btn.ghost{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.btn.ghost:hover{border-color:var(--ink2)}
+.btn.sm{min-height:40px;padding:0 16px;font-size:15px}
+.navlinks a[aria-current="page"]{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.btn[aria-current="page"]{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--accent)}
+.menubtn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;place-items:center;flex:none}
+.menubtn svg{width:20px;height:20px}
+@media (max-width:720px){
+  .navlinks{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;margin:0;padding:8px 20px 16px;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 12px 24px rgba(0,0,0,.08)}
+  .navlinks a{padding:12px 0;font-size:17px}
+  .nav.open .navlinks{display:flex}
+  .nav .btn{margin-left:auto}
+  .menubtn{display:grid}
+  .nav .wrap{gap:10px}
+}
+@media (max-width:400px){.brand{font-size:17px}.brand .mark{width:26px;height:26px}.nav .btn.sm{padding:0 12px}}
+.brand,.btn{white-space:nowrap}
+
+/* hero */
+.hero{padding:56px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:5px 12px;margin-bottom:18px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.hero h1{font-size:clamp(38px,6vw,62px);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{font-size:clamp(17px,2vw,19px);color:var(--ink2);margin-top:18px;max-width:34em}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.heromap{position:relative}
+.map{width:100%;height:auto;display:block}
+.map .bcl{fill:var(--land)}
+.map .cellr{fill:transparent;stroke:var(--grid);stroke-width:2;transition:fill .8s ease}
+.map .cellr.lit{fill:var(--accent);fill-opacity:.85}
+.map .cellr.lit2{fill:var(--accent);fill-opacity:.4}
+.map .outline{fill:none;stroke:var(--ink2);stroke-width:3;stroke-linejoin:round}
+.maptag{position:absolute;left:4%;bottom:8%;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:14px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.maptag b{display:block;font:800 16px var(--display)}
+.maptag span{color:var(--mute)}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr}.heromap{max-width:520px;margin:0 auto;width:100%}.hero{padding-top:36px}}
+
+/* sections */
+section{padding:64px 0}
+.sechd{max-width:640px;margin-bottom:32px}
+.sechd .k{font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sechd h2{font-size:clamp(28px,4vw,40px);font-weight:800}
+.sechd p{color:var(--ink2);margin-top:12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-content:start}
+.step .n{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:800 16px var(--display)}
+.step h3{font-size:19px;margin:0;align-self:center}
+.step p{color:var(--ink2);font-size:15.5px;grid-column:1/-1;margin-top:14px}
+@media (max-width:960px){.steps{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}}
+
+.band{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 36px}
+.rule{display:flex;gap:14px}
+.rule svg{width:26px;height:26px;flex:none;color:var(--accent);margin-top:2px}
+.rule h3{font-size:18px;margin-bottom:6px}
+.rule p{color:var(--ink2);font-size:15.5px}
+@media (max-width:900px){.rules{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.rules{grid-template-columns:1fr}}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:8px 0 20px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.stat b{display:block;font-family:Archivo,system-ui,sans-serif;font-weight:800;font-size:34px;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat span{color:var(--ink2);font-size:15px}
+.netnote{color:var(--ink2);margin:0 0 20px;max-width:46em}
+@media (max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+.mute{color:var(--mute)}
+.yes{color:#1F7A3E;font-weight:700}.no{color:#B3261E;font-weight:700}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .yes{color:#5CC27F}:root:not([data-theme="light"]) .no{color:#F08A80}}
+.points{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-direction:column;gap:18px}
+.points li{display:flex;gap:14px;color:var(--ink2)}
+.points li svg{width:28px;height:28px;flex:none;color:var(--accent);margin-top:1px}
+.points b{color:var(--ink);display:block;margin-bottom:2px}
+.small{font-size:15px}
+.receipt{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:26px 24px 24px;max-width:440px;width:100%;justify-self:center;box-shadow:0 10px 30px rgba(0,0,0,.06);font-size:16px}
+.receipt::before,.receipt::after{content:"";position:absolute;left:10px;right:10px;height:0;border-top:2px dashed var(--line)}
+.receipt::before{top:8px}.receipt::after{bottom:8px}
+.rh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.rh b{font:800 15px var(--display);letter-spacing:.06em;text-transform:uppercase}
+.chip{background:#E3F4E8;color:#1F7A3E;font-weight:700;font-size:14px;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.rq{font:700 18px var(--display);margin:14px 0 10px;line-height:1.3}
+.rr{display:flex;justify-content:space-between;gap:12px;padding:5px 0;color:var(--ink2)}
+.rr .code{color:var(--ink)}
+.rf{margin-top:12px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.rf p{color:var(--ink);font-weight:700}
+.okt{color:#1F7A3E}
+.houses{display:grid;grid-template-columns:repeat(6,30px);gap:8px 10px}
+.house svg{width:30px;height:30px;display:block}
+.house .ok{fill:#1F9D55;transition:opacity .25s,transform .25s;transform-origin:18px 17px}
+.house .okm{transition:opacity .25s}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip{background:#173B26;color:#7AD69A}:root:not([data-theme="light"]) .okt{color:#7AD69A}}
+:root[data-theme="dark"] .chip{background:#173B26;color:#7AD69A}
+.checks{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-direction:column;gap:12px}
+.checks li{display:flex;gap:10px;color:var(--ink2)}
+.checks li::before{content:"";flex:none;width:20px;height:20px;margin-top:3px;border-radius:50%;background:var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%230F6E66' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/20px no-repeat}
+.checks b{color:var(--ink)}
+
+.faq{max-width:760px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 36px 18px 0;font:700 18px var(--display);position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;border-right:2.5px solid var(--mute);border-bottom:2.5px solid var(--mute);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.faq details[open] summary::after{transform:translateY(-30%) rotate(-135deg)}
+.faq details p{color:var(--ink2);padding:0 0 18px}
+
+.join{text-align:center}
+.join .card{background:var(--accent);color:var(--on-accent);border-radius:24px;padding:48px 24px}
+.join h2{font-size:clamp(28px,4vw,40px);font-weight:800}
+.join p{margin:12px auto 0;max-width:34em;opacity:.9}
+.join .btn{background:var(--on-accent);color:var(--accent);margin-top:26px}
+.join .btn:hover{opacity:.92}
+
+footer{padding:32px 0 48px;color:var(--mute);font-size:14.5px}
+footer .wrap{display:flex;gap:16px 28px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+footer .brand{font-size:16px}
+</style>
+</head>
+<body>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Citizens Party, home">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><g fill="var(--on-accent)"><rect x="7" y="7" width="8" height="8" rx="1.5"/><rect x="17" y="7" width="8" height="8" rx="1.5" opacity=".55"/><rect x="7" y="17" width="8" height="8" rx="1.5" opacity=".55"/><rect x="17" y="17" width="8" height="8" rx="1.5"/></g></svg>
+      Citizens Party
+    </a>
+    <nav class="navlinks" id="navlinks" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#rules">Our rules</a>
+      <a href="#vote">Your vote</a>
+      <a href="#faq">FAQ</a>
+      <a href="host.html">Run a host</a>
+    </nav>
+    <a class="btn pri sm" href="download.html">Get the app</a>
+    <button class="menubtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+  </div>
+</header>
+<script>
+(function(){var n=document.getElementById("nav"),b=n.querySelector(".menubtn"),l=n.querySelector(".navlinks");
+  b.addEventListener("click",function(){var o=n.classList.toggle("open");b.setAttribute("aria-expanded",o)});
+  l.addEventListener("click",function(e){if(e.target.closest("a")){n.classList.remove("open");b.setAttribute("aria-expanded","false")}});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&n.classList.contains("open")){n.classList.remove("open");b.setAttribute("aria-expanded","false");b.focus()}});
+})();
+</script>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow"><i></i>British Columbia · Open beta</span>
+        <h1>A party run by its members. <em>Every one of them.</em></h1>
+        <p class="lede">Citizens Party is a participatory party for British Columbia. Members propose, vote on and decide everything, from what we stand for to who speaks for us, in our own neighborhoods. No board. No backroom. No fees.</p>
+        <div class="cta">
+          <a class="btn pri" href="download.html">Get the app</a>
+          <a class="btn ghost" href="#how">See how it works</a>
+        </div>
+      </div>
+      <div class="heromap">
+        {{MAP}}
+        <div class="maptag"><b>123 grids</b><span>Every member votes in their own</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">How it works</div>
+        <h2>Power starts in your neighborhood.</h2>
+        <p>BC is divided into grids. You belong to the one you live in, and that's where you have your say.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h3>Join your grid</h3><p>Pick your grid, the part of BC where you live, and you&#39;re in. It&#39;s free.</p></div>
+        <div class="step"><div class="n">2</div><h3>Propose</h3><p>Have an idea for what the party should stand for? Put it forward. If your neighbors back it, the whole grid votes on it.</p></div>
+        <div class="step"><div class="n">3</div><h3>Vote</h3><p>Every member has the right to vote on everything, and the responsibility to show up when it counts.</p></div>
+        <div class="step"><div class="n">4</div><h3>Go BC-wide</h3><p>A principle that passes in one grid can go to every grid. If most grids agree, it becomes the party's.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules" class="band">
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">Our rules</div>
+        <h2>Built so nobody can take it over.</h2>
+        <p>Most parties are run by a board and an annual meeting that a few people can capture. Ours is written so that can't happen.</p>
+      </div>
+      <div class="rules">
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><div><h3>Members are the final say</h3><p>No board or leader can overrule what the members decide.</p></div></div>
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><div><h3>Nobody can be pushed out</h3><p>No leader or board can expel a member.</p></div></div>
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><div><h3>Recall is always open</h3><p>Anyone elected can be removed, but only by the members who elected them.</p></div></div>
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><div><h3>Everything in the open</h3><p>Party communications are public. There's no inner circle and no private channel.</p></div></div>
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg><div><h3>No fees, ever</h3><p>Membership is free. Your voice doesn't depend on your wallet.</p></div></div>
+        <div class="rule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><div><h3>No off switch</h3><p>The votes aren&#39;t kept in one place. Members keep copies on their own computers, so no one can shut it down.</p></div></div>
+      </div>
+      <a class="cta-const" href="constitution.html">
+        <span><b>Most constitutions are written on paper. Ours is built into the app.</b><span>See how the rules enforce themselves, who holds what power, the risks, and the backup plan if something goes wrong.</span></span>
+        <span class="btn pri">Read our constitution <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section id="vote">
+    <div class="wrap split">
+      <div>
+        <div class="sechd" style="margin-bottom:0">
+          <div class="k">Your vote</div>
+          <h2>No one can change your vote. Not even us.</h2>
+          <p>In most parties, a few people count the votes and everyone else takes their word for it. Here, you don't have to take anyone's word for it.</p>
+        </div>
+        <ul class="points">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><div><b>You can always find your own vote.</b> Your vote is listed under a private code that only you know. If anyone ever changed it, you'd see it.</div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l5-4 5 4v8H3z"/><path d="M11 11l5-4 5 4v8h-8"/><path d="M6.5 19v-4h3v4"/></svg><div><b>The party doesn't keep the votes. Members do.</b> Copies of every vote are kept by members on their own computers, so the party can never change a result.</div></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><div><b>Your vote is locked before it leaves your phone.</b> Your phone locks your vote with a key only you have. Even if everyone else agreed to change it, it wouldn't match, and you'd know.</div></li>
+        </ul>
+        <p class="small mute" style="margin-top:18px">The app's code will be public, so anyone can check how it works.</p>
+      </div>
+      <div class="receipt" role="img" aria-label="Example vote receipt: your vote, under your private code, matches all 12 copies kept by members.">
+        <div class="rh"><b>Your vote receipt</b><span class="chip">✓ Matches</span></div>
+        <p class="rq">Taxes should be low, simple and fair.</p>
+        <div class="rr"><span>Your code</span><span class="code">V-SQC5V3</span></div>
+        <div class="rr"><span>Your vote</span><b class="yes">Yes</b></div>
+        <div class="rr"><span>Cast</span><span>Oct 21, 2:14 PM</span></div>
+        <div class="rf">
+          <p><b class="okt">✓</b> Matches all 12 copies kept by members</p>
+          <div class="houses"><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="house"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="var(--land)" stroke="var(--ink2)" stroke-width="1.5" stroke-linejoin="round"/><circle class="ok" cx="18" cy="17" r="5"/><path class="okm" d="M15.7 17.1l1.6 1.6 3-3.3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <span class="small mute">Copies kept by members</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="network" class="band">
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">Who keeps the votes</div>
+        <h2>Kept by members, not a head office.</h2>
+        <p>Copies of every vote are kept on computers that members run at home. We call them hosts. These numbers come straight from them.</p>
+      </div>
+      <div class="stats" aria-live="polite">
+        <div class="stat"><b id="st-members">—</b><span id="st-members-l">members</span></div>
+        <div class="stat"><b id="st-online">—</b><span>online now</span></div>
+        <div class="stat"><b id="st-hosts">—</b><span id="st-hosts-l">hosts running</span></div>
+        <div class="stat"><b id="st-votes">—</b><span id="st-votes-l">votes</span></div>
+      </div>
+      <p class="netnote" id="st-note">Checking the hosts…</p>
+      <div class="cta">
+        <a class="btn pri" href="download.html">Get the app</a>
+        <a class="btn ghost" href="host.html">Run a host</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sechd"><div class="k">FAQ</div><h2>Questions</h2></div>
+      <div class="faq">
+        <details><summary>Does it cost anything to join?</summary><p>No. Membership is free and always will be. If the party ever raises money for a campaign, giving will be voluntary and the budget will be public.</p></details>
+        <details><summary>Who can join?</summary><p>During the beta, anyone can join. In the final version, membership will be open to Canadian citizens who live in British Columbia.</p></details>
+        <details><summary>How will you make sure people use their real address?</summary><p>In the final version, your address will be checked against your driver&#39;s license by a trusted outside ID service. During the beta, we take your word for it.</p></details>
+        <details><summary>A driver&#39;s license doesn&#39;t prove citizenship, does it?</summary><p>Correct. We&#39;re looking at ways to also use a citizenship card or a passport.</p></details>
+        <details><summary>Why a grid?</summary><p>BC is divided into squares of equal size, about 120 of them, and you belong to the one you live in. The lines follow simple math, not politics, so nobody can redraw them to help one side win. Each one is a local area, so you decide things alongside people from your own part of the province.</p></details>
+        <details><summary>Where is the constitution?</summary><p>This is a beta, so for now the app&#39;s rules are how the constitution is expressed. Once we&#39;ve worked out the details, we&#39;ll write it down in full, and we may put it to a members&#39; vote before it&#39;s adopted.</p></details>
+        <details><summary>Can people see how I voted?</summary><p>Votes are listed under a private code, never your name. Only you can see which code is yours. Nobody else, not even the party, can tell how you voted.</p></details>
+        <details><summary>Do you use Tor?</summary><p>Yes, for ballots, in the app. Tor hides which internet connection a message came from. In the Android app, your ballot travels through Tor, so not even the computer that receives it can tell where it came from. Sending a vote takes a few seconds longer; everything else stays just as fast. On a computer, you get the same protection by opening the app in Tor Browser. It&#39;s coming to the iPhone app too.</p></details>
+        <details><summary>Why do I have to vote?</summary><p>Because a party run by its members only works if the members show up. Skip a required vote and you sit out the next 72 hours. Optional votes, like BC-wide ones, never count against you.</p></details>
+        <details><summary>Who runs it?</summary><p>The members. There's no board or head office that can override them. Anyone elected answers to the grid that elected them and can be recalled by it.</p></details>
+        <details><summary>Can I change my grid?</summary><p>Yes, any time, in the app&#39;s Settings. Moving locks your account for 72 hours: you can still look around, but you can&#39;t propose or vote. That stops people from looking for proposals they like in other areas and moving in just to vote on them. During the beta, this wait is waived. In the final version, we plan to confirm where you live with an outside ID check, so your grid matches your home.</p></details>
+        <details><summary>What if someone posts too many proposals?</summary><p>Anyone can propose as many principles as they like. We don&#39;t block or limit members, because deciding who gets silenced is a power nobody should have. Instead, you can ignore anyone who posts too much: their proposals disappear from your lists while they gather support. If one gets enough support to go to a full vote, it shows up again, because every member votes on it. Ignoring is private, and it&#39;s saved only on your phone.</p></details>
+        <details><summary>Can I see the code?</summary><p>Yes. All of it is public on <a href="https://github.com/citizensparty/app">GitHub</a>: the app, the host program and this website. Anyone can read it, check that it does what we say, or build their own app on the same record.</p></details>
+        <details><summary>Is this the final version?</summary><p>Not yet. We&#39;re still testing. Votes during testing are for practice and won&#39;t become party policy. Before the official launch, we may start over with a clean slate. If we do, you&#39;ll just sign up again. Once we launch, every vote is kept for good, and no one can erase it, not even us.</p></details>
+        <details><summary>How do I join?</summary><p>Get the app on your phone or computer, enter your address to find your grid, and you&#39;re in. It&#39;s free.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="feedback" class="band">
+    <div class="wrap fbwrap">
+      <div class="sechd" style="margin-bottom:0">
+        <div class="k">Feedback</div>
+        <h2>We&#39;re in beta. Tell us how to make it better.</h2>
+        <p>What&#39;s confusing, what&#39;s missing, what you&#39;d change. Every message is read, and none of it goes on the public record.</p>
+        <p class="small mute" style="margin-top:14px">Rather email? <b class="sel">admin@citizensparty.ca</b> · <a href="mailto:admin@citizensparty.ca?subject=Citizens%20Party%20feedback">Open my email app</a></p>
+      </div>
+      <form class="fbform" id="fbform" novalidate>
+        <label for="fb-msg">Your feedback</label>
+        <textarea id="fb-msg" name="message" rows="5" maxlength="5000" required placeholder="What should we change?"></textarea>
+        <div class="fbrow">
+          <div><label for="fb-name">Name <span class="mute">(optional)</span></label><input id="fb-name" name="name" maxlength="100" autocomplete="name"></div>
+          <div><label for="fb-email">Email, for a reply <span class="mute">(optional)</span></label><input id="fb-email" name="email" type="email" maxlength="200" autocomplete="email"></div>
+        </div>
+        <input class="hp" id="fb-site" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn pri" type="submit" id="fb-go">Send feedback</button>
+        <p class="fbst small" id="fb-st" role="status"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><g fill="var(--on-accent)"><rect x="7" y="7" width="8" height="8" rx="1.5"/><rect x="17" y="7" width="8" height="8" rx="1.5" opacity=".55"/><rect x="7" y="17" width="8" height="8" rx="1.5" opacity=".55"/><rect x="17" y="17" width="8" height="8" rx="1.5"/></g></svg>Citizens Party</span>
+    <span><a href="download.html">Get the app</a> · <a href="host.html">Run a host</a> · <a href="constitution.html">Constitution</a> · <a href="./#feedback">Feedback</a> · <a href="https://github.com/citizensparty/app">Source code</a> · Not for profit · © <span id="yr">2026</span></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var nav=document.getElementById("nav");
+  function onScroll(){nav.classList.toggle("scrolled",window.scrollY>4)}
+  window.addEventListener("scroll",onScroll,{passive:true});onScroll();
+  try{document.getElementById("yr").textContent=new Date().getFullYear()}catch(e){}
+  // feedback: kept privately by the site (POST /api/feedback); nothing goes on the public record
+  var fb=document.getElementById("fbform");if(fb)fb.addEventListener("submit",function(e){e.preventDefault();
+    var st=document.getElementById("fb-st"),go=document.getElementById("fb-go"),msg=document.getElementById("fb-msg").value.trim();
+    if(msg.length<3){st.className="fbst small bad";st.textContent="Write a few words first.";return}
+    go.disabled=true;st.className="fbst small";st.textContent="Sending…";
+    fetch("/api/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg,name:document.getElementById("fb-name").value,email:document.getElementById("fb-email").value,website:document.getElementById("fb-site").value,page:"landing"})})
+      .then(function(r){return r.json()}).then(function(j){go.disabled=false;if(j&&j.ok){fb.reset();st.className="fbst small ok";st.textContent="✓ Thanks! We got it."}else{st.className="fbst small bad";st.textContent=(j&&j.why)||"That didn't send. Try again."}})
+      .catch(function(){go.disabled=false;st.className="fbst small bad";st.textContent="That didn't send. Check your connection, or email admin@citizensparty.ca."})});
+  // the receipt: the copies' checks tick in one by one when it comes into view
+  (function(){var r=document.querySelector(".receipt");if(!r)return;
+    var calm=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(calm||!("IntersectionObserver" in window))return;
+    var hs=[].slice.call(r.querySelectorAll(".house"));
+    hs.forEach(function(h){h.querySelector(".ok").style.opacity=0;h.querySelector(".okm").style.opacity=0});
+    var io=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;io.disconnect();
+      hs.forEach(function(h,i){setTimeout(function(){h.querySelector(".ok").style.opacity=1;h.querySelector(".okm").style.opacity=1},150+i*120)})},{threshold:.4});
+    io.observe(r)})();
+  // light up grids one by one, as if members were voting across BC
+  var cells=[].slice.call(document.querySelectorAll(".heromap .cellr"));
+  if(!cells.length)return;
+  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
+  var order=cells.map(function(c){return [rnd(),c]}).sort(function(a,b){return a[0]-b[0]}).map(function(x){return x[1]});
+  var lit=order.slice(0,Math.round(cells.length*.42));
+  if(reduce){lit.forEach(function(c,i){c.classList.add(i%3?"lit2":"lit")});return}
+  lit.forEach(function(c,i){setTimeout(function(){c.classList.add(i%3?"lit2":"lit")},300+i*45)});
+})();
+</script>
+<script>
+(function(){
+  var hosts={{HOSTS}},$=function(i){return document.getElementById(i)};
+  var DASH="—";
+  // a number and its label: 1 member, 2 members; "—" when unknown
+  function tile(id,n,one,many){
+    var ok=typeof n==="number"&&isFinite(n)&&n>=0;
+    $(id).textContent=ok?n.toLocaleString("en-US"):DASH;
+    if(one&&$(id+"-l"))$(id+"-l").textContent=ok&&n===1?one:many;
+  }
+  function info(h){
+    var url=h.url.replace(/^ws/,"http"),c=new AbortController(),t=setTimeout(function(){c.abort()},6000);
+    return fetch(url,{headers:{Accept:"application/nostr+json"},signal:c.signal}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);return j&&j.stats?j:null}).catch(function(){return null});
+  }
+  function show(up,listed){
+    if(!up.length){
+      tile("st-members",null,"member","members");tile("st-online",null);tile("st-votes",null,"vote","votes");
+      tile("st-hosts",listed||null,"host running","hosts running");
+      $("st-note").textContent=listed?"No hosts answered just now. Try again in a minute.":"No hosts are online right now. Yours could be the first.";return}
+    var max=function(f){return up.reduce(function(m,j){var v=f(j);return typeof v==="number"&&v>m?v:m},-1)},val=function(n){return n<0?null:n};
+    var net=Math.max(listed||0,up.length,max(function(j){return j.network&&j.network.hosts}));
+    tile("st-hosts",net,"host running","hosts running");
+    tile("st-members",val(max(function(j){return j.stats.members})),"member","members");
+    tile("st-online",val(max(function(j){return j.stats.online})));
+    tile("st-votes",val(max(function(j){return j.stats.votes})),"vote","votes");
+    $("st-note").textContent="Every host keeps a full copy of every vote. Anyone can run one.";
+  }
+  // the directory lists every working host; ask the most reliable few for the live numbers
+  fetch("hosts.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(d){
+    var list=(d&&d.hosts||[]).slice(0,4);if(!list.length)list=hosts;
+    return Promise.all(list.map(info)).then(function(rs){show(rs.filter(Boolean),d&&d.hosts?d.hosts.length:0)});
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Citizens Party host in Docker: for Mac, Windows and Linux.
+# Published at https://citizensparty.ca/downloads/docker-compose.yml (from host/docker-compose.download.yml).
+#
+#   docker compose up -d                                 start it (it puts itself online with a free tunnel)
+#   docker compose exec host citizens-host status        the live status screen
+#   docker compose build --pull --no-cache && docker compose up -d     update it
+#
+# The record and the host's key are kept in ./data next to this file, so updates keep them.
+# No ports need opening: the host reaches the internet through a Cloudflare quick tunnel.
+services:
+  host:
+    build:
+      dockerfile_inline: |
+        FROM alpine:3.22
+        ARG TARGETARCH
+        RUN apk add --no-cache ca-certificates curl tor \
+         && A=$$( [ "$$TARGETARCH" = arm64 ] && echo arm64 || echo x64 ) \
+         && curl -fsSL "https://citizensparty.ca/downloads/citizens-host-linux-$$A.tar.gz" | tar xz -C /opt \
+         && ln -s /opt/citizens-host/citizens-host /usr/local/bin/citizens-host
+        ENV DATA_DIR=/data STATUS=off
+        VOLUME /data
+        CMD ["citizens-host"]
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
