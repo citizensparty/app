@@ -25,7 +25,7 @@
 :root{
   --bg:#F3F6F5;--surface:#FFFFFF;--ink:#12201E;--ink2:#4A5A57;--mute:#7F8E8B;--line:#DCE4E2;
   --accent:#0F6E66;--accent-2:#0B5650;--accent-soft:#E1EFEC;--on-accent:#FFFFFF;--warn:#E8A33D;
-  --land:#D5E0DC;--grid:#B9C8C3;
+  --land:#D5E0DC;--grid:#B9C8C3;--bezel:#12201E;
   --display:"Archivo","Helvetica Neue",Arial,sans-serif;
   --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:light;
@@ -33,11 +33,11 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0E1513;--surface:#16201E;--ink:#E6EEEC;--ink2:#AEBDBA;--mute:#7C8C89;--line:#26332F;
   --accent:#4FB8AC;--accent-2:#6CCBC0;--accent-soft:#163430;--on-accent:#06201D;
-  --land:#25332F;--grid:#3A4B47;color-scheme:dark}}
+  --land:#25332F;--grid:#3A4B47;--bezel:#33433F;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1513;--surface:#16201E;--ink:#E6EEEC;--ink2:#AEBDBA;--mute:#7C8C89;--line:#26332F;
   --accent:#4FB8AC;--accent-2:#6CCBC0;--accent-soft:#163430;--on-accent:#06201D;
-  --land:#25332F;--grid:#3A4B47;color-scheme:dark}
+  --land:#25332F;--grid:#3A4B47;--bezel:#33433F;color-scheme:dark}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:72px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -55,6 +55,22 @@ p{margin:0}
 .cta-const .btn{flex:none}
 .cta-const:hover .btn{background:var(--accent-2)}
 @media (max-width:700px){.cta-const{flex-direction:column;align-items:stretch}.cta-const .btn{width:100%}}
+/* the app: why, and screenshots */
+.why{margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.why li{list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.why svg{width:30px;height:30px;color:var(--accent)}
+.why h3{font-size:19px}
+.why p{color:var(--ink2);font-size:15.5px}
+@media (max-width:960px){.why{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.why{grid-template-columns:1fr}}
+.phones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin:36px 0 0;padding:0}
+.phones figure{margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+.phones .ph{border-radius:26px;padding:7px;background:var(--bezel);box-shadow:0 18px 40px -22px rgba(10,30,28,.45)}
+.phones img{display:block;width:100%;height:auto;aspect-ratio:390/760;border-radius:20px;background:var(--surface)}
+.phones figcaption{font-size:15px;color:var(--ink2);text-align:center;text-wrap:balance}
+.phones figcaption b{display:block;color:var(--ink);font-family:var(--display);font-size:17px;margin-bottom:2px}
+@media (max-width:860px){.phones{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;margin-left:-20px;margin-right:-20px;padding:0 20px 8px}
+  .phones figure{flex:0 0 min(62vw,240px);scroll-snap-align:center}}
 /* feedback */
 .fbwrap{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start}
 .fbform{display:flex;flex-direction:column;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:20px}
@@ -209,6 +225,7 @@ footer .brand{font-size:16px}
       Citizens Party
     </a>
     <nav class="navlinks" id="navlinks" aria-label="Sections">
+      <a href="#app">The app</a>
       <a href="#how">How it works</a>
       <a href="#rules">Our rules</a>
       <a href="#vote">Your vote</a>
@@ -233,16 +250,39 @@ footer .brand{font-size:16px}
       <div>
         <span class="eyebrow"><i></i>British Columbia · Open beta</span>
         <h1>A party run by its members. <em>Every one of them.</em></h1>
-        <p class="lede">Citizens Party is a participatory party for British Columbia. Members propose, vote on and decide everything, from what we stand for to who speaks for us, in our own neighborhoods. No board. No backroom. No fees.</p>
+        <p class="lede">Citizens Party is a political party for British Columbia that runs on an app. Members propose, vote on and decide everything, from what we stand for to who speaks for us, from their phone or computer at home. No board. No backroom. No fees.</p>
         <div class="cta">
           <a class="btn pri" href="download.html">Get the app</a>
-          <a class="btn ghost" href="#how">See how it works</a>
+          <a class="btn ghost" href="#app">See the app</a>
         </div>
       </div>
       <div class="heromap">
         {{MAP}}
         <div class="maptag"><b>123 grids</b><span>Every member votes in their own</span></div>
       </div>
+    </div>
+  </section>
+
+  <section id="app">
+    <div class="wrap">
+      <div class="sechd">
+        <div class="k">The app</div>
+        <h2>A whole party, run from your living room.</h2>
+        <p>Citizens Party isn&#39;t run from a head office or decided at a convention. It runs on a free app. Every member takes part from their phone or computer, wherever they are in BC.</p>
+      </div>
+      <ul class="why">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z"/></svg><h3>Take part from home</h3><p>No halls, no meetings, no driving. Read proposals and vote from your couch, whenever suits you. Every vote stays open for 3 days.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 1.6 4.5 4.5"/></svg><h3>Every member decides</h3><p>Not just the few who can travel to a convention. Whether you live in Vancouver or Fort Nelson, you vote on everything in your grid.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg><h3>Nobody can take it over</h3><p>There&#39;s no head office and no single server. The votes are kept by members on many computers, so no wealthy donor, insider or group can quietly take control or change the rules.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><h3>Free and private</h3><p>No fees, ever. Your vote is secret, and you can check for yourself that it was counted.</p></li>
+      </ul>
+      <div class="phones">
+        <figure><div class="ph"><picture><source srcset="shots/grid-dark.webp" media="(prefers-color-scheme: dark)"><img src="shots/grid-light.webp" alt="The app's grid page: Vancouver area, 147 members, 3 principles and an open vote" width="390" height="760" loading="lazy"></picture></div><figcaption><b>Your grid</b>What your area stands for, and who&#39;s in it.</figcaption></figure>
+        <figure><div class="ph"><picture><source srcset="shots/vote-dark.webp" media="(prefers-color-scheme: dark)"><img src="shots/vote-light.webp" alt="A vote in the app: Every party meeting is streamed live, with Yes and No buttons" width="390" height="760" loading="lazy"></picture></div><figcaption><b>Vote Yes or No</b>Your neighbors propose, everyone votes.</figcaption></figure>
+        <figure><div class="ph"><picture><source srcset="shots/votes-dark.webp" media="(prefers-color-scheme: dark)"><img src="shots/votes-light.webp" alt="The Votes tab: open and closed votes with their results" width="390" height="760" loading="lazy"></picture></div><figcaption><b>Every vote in BC</b>Open and closed votes, in every grid.</figcaption></figure>
+        <figure><div class="ph"><picture><source srcset="shots/record-dark.webp" media="(prefers-color-scheme: dark)"><img src="shots/record-light.webp" alt="The vote record: the record checks out, 3 votes sealed" width="390" height="760" loading="lazy"></picture></div><figcaption><b>Check it yourself</b>Every vote is sealed, so changes show.</figcaption></figure>
+      </div>
+      <div class="cta" style="margin-top:32px"><a class="btn pri" href="download.html">Get the app</a></div>
     </div>
   </section>
 
@@ -254,7 +294,7 @@ footer .brand{font-size:16px}
         <p>BC is divided into grids. You belong to the one you live in, and that's where you have your say.</p>
       </div>
       <div class="steps">
-        <div class="step"><div class="n">1</div><h3>Join your grid</h3><p>Pick your grid, the part of BC where you live, and you&#39;re in. It&#39;s free.</p></div>
+        <div class="step"><div class="n">1</div><h3>Join your grid</h3><p>Get the app, pick your grid, the part of BC where you live, and you&#39;re in. It&#39;s free.</p></div>
         <div class="step"><div class="n">2</div><h3>Propose</h3><p>Have an idea for what the party should stand for? Put it forward. If your neighbors back it, the whole grid votes on it.</p></div>
         <div class="step"><div class="n">3</div><h3>Vote</h3><p>Every member has the right to vote on everything, and the responsibility to show up when it counts.</p></div>
         <div class="step"><div class="n">4</div><h3>Go BC-wide</h3><p>A principle that passes in one grid can go to every grid. If most grids agree, it becomes the party's.</p></div>

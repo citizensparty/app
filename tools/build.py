@@ -316,6 +316,7 @@ def build_site():
     except Exception as e:
         print("using the committed landing/og.png (" + e.__class__.__name__ + ")")
     shutil.copy(ROOT / "landing/og.png", out / "og.png")
+    shutil.copytree(ROOT / "landing/shots", out / "shots")  # app screenshots (tools/make_shots.py)
     build_pages(out)
     print("built", out)
 
