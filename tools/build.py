@@ -117,6 +117,7 @@ PAGE_CSS = """
 PAGES = {
     "host": ("Run a host · Citizens Party", "Keep a copy of the record on your own computer.", "https://citizensparty.ca/host", 'href="host.html"'),
     "constitution": ("Constitution · Citizens Party", "How our rules work, who holds what power, the risks, and the backup plan.", "https://citizensparty.ca/constitution", None),
+    "testers": ("Help us test · Citizens Party", "Help get the Citizens Party app on Google Play: test it for 14 days.", "https://citizensparty.ca/testers", None),
     "privacy": ("Privacy · Citizens Party", "What the Citizens Party app and website keep, and what they don't.", "https://citizensparty.ca/privacy", None),
     "download": ("Get the app · Citizens Party", "Join your grid and vote from your phone.", "https://citizensparty.ca/download", 'class="btn pri sm" href="download.html"'),
 }

@@ -5,6 +5,7 @@
   python3 tools/feedback.py 200        the newest 200
   python3 tools/feedback.py --sync     add new messages to feedback/feedback.csv and rebuild feedback/index.html
   python3 tools/feedback.py --page     rebuild feedback/index.html from the CSV only (no download)
+  python3 tools/feedback.py --testers  sync, then print the Google Play tester sign-ups (citizensparty.ca/testers), comma-separated
 Needs the one-time `npx wrangler login` in worker/ (the same as tools/deploy.py).
 
 feedback/ is private and never committed (.gitignore). feedback.csv holds every message, from the form and from
@@ -58,8 +59,8 @@ def sync():
             continue
         page = r.get("page") or ""
         rows.append({"id": rid, "date": time.strftime("%Y-%m-%d %H:%M", time.localtime(r["at"])),
-                     "source": "App (%s)" % page[4:] if page.startswith("app/") else "App" if page == "app" else "Website",
-                     "from": r.get("name") or "", "contact": r.get("email") or "", "kind": "feedback",
+                     "source": "Tester sign-up" if page == "testers" else "App (%s)" % page[4:] if page.startswith("app/") else "App" if page == "app" else "Website",
+                     "from": r.get("name") or "", "contact": r.get("email") or "", "kind": "tester" if page == "testers" else "feedback",
                      "topics": "", "status": "New", "message": r["msg"], "notes": ""})
         new += 1
     save(rows)
@@ -139,6 +140,11 @@ if __name__ == "__main__":
     if a == "--sync":
         sync()
         page()
+    elif a == "--testers":
+        sync()
+        page()
+        ts = sorted({r["contact"].strip().lower() for r in load() if r["kind"] == "tester" and "@" in r["contact"]})
+        print("%d testers:\n%s" % (len(ts), ", ".join(ts)))
     elif a == "--page":
         page()
     else:

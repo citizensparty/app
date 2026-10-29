@@ -1,0 +1,50 @@
+<!-- title: Help us test · Citizens Party -->
+<style>
+.tx{max-width:44em}
+.tx h3{font-size:20px;font-weight:800;margin-top:28px}
+.tx p,.tx li{color:var(--ink2)}
+.tx ol{padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
+.tx b{color:var(--ink)}
+.tx .fbform{margin-top:16px}
+.tx .fbform+p{margin-top:12px}
+</style>
+<main id="top">
+  <section>
+    <div class="wrap tx">
+      <div class="sechd">
+        <div class="k">Help us test</div>
+        <h2>Help us get on Google Play.</h2>
+        <p>Before a new app can be listed on Google Play, Google requires at least 12 people to test it for 14 days. We need your help to get there.</p>
+      </div>
+
+      <h3>What you&#39;d do</h3>
+      <ol>
+        <li><b>Leave your Google email address below.</b> It&#39;s the address you use for the Play Store on your phone, usually a Gmail address.</li>
+        <li><b>We&#39;ll email you a link</b> once the test opens.</li>
+        <li><b>Install the app from Google Play</b> through that link, and keep it on your phone for 14 days. Open it now and then, look around, and vote if you like.</li>
+      </ol>
+      <p>You need an Android phone. It&#39;s free, and you can tell us what you think any time.</p>
+
+      <h3>Sign up to test</h3>
+      <form class="fbform" id="tsform" novalidate>
+        <div class="fbrow">
+          <div><label for="ts-email">Your Google email address</label><input id="ts-email" type="email" maxlength="200" autocomplete="email" required placeholder="you@gmail.com"></div>
+          <div><label for="ts-name">Name <span class="mute">(optional)</span></label><input id="ts-name" maxlength="100" autocomplete="name"></div>
+        </div>
+        <input class="hp" id="ts-site" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn pri" type="submit" id="ts-go">Sign me up</button>
+        <p class="fbst small" id="ts-st" role="status"></p>
+      </form>
+      <p class="small mute">We use your address only to add you to the test and send you the link. It&#39;s never put on the public record, and we delete it after the test. See our <a href="privacy.html">privacy policy</a>.</p>
+    </div>
+  </section>
+</main>
+<script>
+(function(){var f=document.getElementById("tsform");f.addEventListener("submit",function(e){e.preventDefault();
+  var st=document.getElementById("ts-st"),go=document.getElementById("ts-go"),em=document.getElementById("ts-email").value.trim(),nm=document.getElementById("ts-name").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){st.className="fbst small bad";st.textContent="Enter your email address first.";return}
+  go.disabled=true;st.className="fbst small";st.textContent="Sending…";
+  fetch("/api/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:"Tester sign-up: "+em,name:nm,email:em,website:document.getElementById("ts-site").value,page:"testers"})})
+    .then(function(r){return r.json()}).then(function(j){go.disabled=false;if(j&&j.ok){f.reset();st.className="fbst small ok";st.textContent="✓ Thanks! We'll email you when the test opens."}else{st.className="fbst small bad";st.textContent=(j&&j.why)||"That didn't send. Try again."}})
+    .catch(function(){go.disabled=false;st.className="fbst small bad";st.textContent="That didn't send. Check your connection, or email admin@citizensparty.ca."})})})();
+</script>
