@@ -31,3 +31,6 @@ CLAUDE.md
 
 # private feedback log (tools/feedback.py --sync): never committed
 feedback/
+
+# Google Play Console answers (private)
+play-console/
