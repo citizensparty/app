@@ -349,7 +349,7 @@ function render(){
   else if(v&&v.type==="feedback")body=feedbackView(v);
   else if(!myMember()&&!(v&&v.type==="form"))body=joinView();
   else if(v&&v.type==="form")body=formView(v);
-  else if(v&&v.type==="item"&&S.items[v.id])body=itemView(S.items[v.id]);
+  else if(v&&v.type==="item"&&S.items[v.id])body=itemView(S.items[v.id])+reportLink(S.items[v.id]);
   else if(v&&v.type==="team"&&teams()[v.id])body=teamView(teams()[v.id]);
   else if(v&&v.type==="hist")body=historyView(v.kind,v.level,v.cell);
   else if(v&&v.type==="scope")body=scopePickView();
@@ -1356,8 +1356,19 @@ function soonPanel(k){const W=k==="workshops";
     '<p class="small" style="margin:0">We&#39;re thinking about building this, and we want to hear from members first, during the beta. What would you use it for?</p>'+
     '<button type="button" class="btn block" data-act="feedback" data-v="'+k+'">Tell us what you think</button></div>'}
 // Feedback: kept privately by citizensparty.ca (POST /api/feedback), never on the public record
+// Report: a proposal that breaks the rules (hate, threats, illegal content, someone's private details) goes to the same private inbox.
+// Nothing is removed from the record; members can still ignore its author.
+function reportLink(it){if(!it||!it.by||it.by===S.me||!it.text)return "";
+  return '<p class="small muted" style="margin:0;text-align:center"><button type="button" class="tlink plain" data-act="report" data-v="'+it.id+'">Report this proposal</button></p>'}
 const FEEDBACK_URL=((window.CP_BUILD&&window.CP_BUILD.directory)||"").replace(/\/$/,"")+"/api/feedback";
 function feedbackView(v){const about=v.about==="workshops"?"Workshops":v.about==="roles"?"Roles":"";
+  const rep=v.about==="report"&&S.items[v.id];
+  if(rep)return backBtn+'<h1 style="margin:0">Report this proposal</h1><p class="lede" style="margin:0">Proposals must not contain hate, threats, illegal content or anyone&#39;s private details. Tell us what&#39;s wrong. Only the party sees reports.</p>'+
+    '<div class="card"><p class="cardtext" style="margin:0">'+esc(rep.text)+'</p></div>'+
+    '<label class="f" for="fb-msg">What&#39;s wrong with it?<textarea class="inp" id="fb-msg" rows="4" maxlength="4000" placeholder="For example: it threatens someone"></textarea></label>'+
+    '<label class="f" for="fb-email">Email, if you&#39;d like a reply <span class="muted">(optional)</span><input class="inp" id="fb-email" type="email" maxlength="200" autocomplete="email"></label>'+
+    '<p class="small" id="fb-st" role="status" style="margin:0"></p><button type="button" class="btn pri block" data-act="fb-send" id="fb-go">Send report</button>'+
+    '<p class="small muted" style="margin:0">To stop seeing this member&#39;s proposals, open their page and tap Ignore this member.</p>';
   return backBtn+'<h1 style="margin:0">Send feedback</h1><p class="lede" style="margin:0">'+(about?'What would you use '+about+' for? What should it do?':'What&#39;s confusing, what&#39;s missing, what you&#39;d change.')+' Every message is read, and none of it goes on the public record.</p>'+
     '<label class="f" for="fb-msg">Your feedback<textarea class="inp" id="fb-msg" rows="5" maxlength="5000" placeholder="What should we change?"></textarea></label>'+
     '<label class="f" for="fb-email">Email, if you&#39;d like a reply <span class="muted">(optional)</span><input class="inp" id="fb-email" type="email" maxlength="200" autocomplete="email"></label>'+
@@ -1366,9 +1377,16 @@ function feedbackView(v){const about=v.about==="workshops"?"Workshops":v.about==
 async function sendFeedback(){const msg=(val("fb-msg")||"").trim(),st=$("#fb-st"),go=$("#fb-go");const v=S.ui.view||{};
   if(msg.length<3){st.className="small kvn";st.textContent="Write a few words first.";return}
   go.disabled=true;st.className="small muted";st.textContent="Sending…";
-  try{const r=await fetch(FEEDBACK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:msg,email:val("fb-email")||"",page:"app"+(v.about?"/"+v.about:"")})});const j=await r.json();
-    if(j&&j.ok){done();toast("Thanks! We got it.");return}go.disabled=false;st.className="small kvn";st.textContent=(j&&j.why)||"That didn't send. Try again."}
+  const rep=v.about==="report"&&S.items[v.id];
+  const body=rep?"REPORT of proposal "+rep.id+" by "+rep.by+" ("+(rep.cell||rep.level||"")+"):\n\""+rep.text+"\"\n\nWhy: "+msg:msg;
+  try{const r=await fetch(FEEDBACK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:body,email:val("fb-email")||"",page:"app"+(v.about?"/"+v.about:"")})});const j=await r.json();
+    if(j&&j.ok){done();toast(rep?"Thanks. We'll look at it.":"Thanks! We got it.");return}go.disabled=false;st.className="small kvn";st.textContent=(j&&j.why)||"That didn't send. Try again."}
   catch(e){go.disabled=false;st.className="small kvn";st.textContent="That didn't send. Check your connection, or email admin@citizensparty.ca."}}
+async function deleteAccount(){
+  const k=await askBox("Delete your account?",'<p>This takes you off your grid&#39;s member list and removes your key and the app&#39;s records from this phone.</p><p>Your votes were secret and never linked to you, so they stay in the vote record without your name. Proposals you made stay too, because they&#39;re part of the record.</p><p><b>Write down your 12 words first</b> if you might want to join again. Without them, nobody can bring this account back.</p>',[["del","Delete my account",true],["","Cancel"]]);
+  if(k!=="del")return;
+  try{await window.CPAccount.deleteAccount();await askBox("Your account is deleted",'<p>Thanks for taking part. You can join again any time.</p>',[["","OK",true]]);location.reload()}
+  catch(e){toast(String(e&&e.message)==="offline"?"Can't reach a host. Try again when you're online.":"That didn't work. Try again.","err")}}
 function scopePickView(){
   const counts=cellCounts();const cur=platScope();
   const grids=[...new Set(Object.values(S.members).map(m=>m.cell))].sort((a,b)=>(b===myCell())-(a===myCell())||(counts[b]||0)-(counts[a]||0));
@@ -1587,7 +1605,7 @@ function memberPage(uid){const mine=uid===S.me;
   const list=F[fk][1].slice().sort((x,y)=>(y.closes||0)-(x.closes||0));
   const vRows=fbar+(list.length?'<div class="list">'+list.map(row).join("")+'</div>':'<div class="card empty">Nothing here.</div>');
   const note=mine?'':'<p class="muted small" style="margin:0">Votes are secret: you can see that '+esc(nameOf(uid).split(" ")[0])+' took part, not how they voted.</p>';
-  const settings=mine?'<div class="card stack"><h2>Feedback</h2><p class="small muted" style="margin:0">Tell us what to improve. It isn&#39;t posted anywhere.</p><button type="button" class="btn block" data-act="feedback">Send feedback</button></div><div class="card stack"><h2>Members you ignore</h2>'+(()=>{const g=Object.keys(ignored()).filter(k=>S.members[k]);return g.length?'<div class="list">'+g.map(k=>'<div class="li"><span class="tx"><span class="t">'+esc(nameOf(k))+'</span><span class="s">'+esc(gridName(S.members[k].cell))+'</span></span><button type="button" class="tlink" data-act="ign" data-v="'+k+'">Stop ignoring</button></div>').join("")+'</div>':'<p class="small muted" style="margin:0">Nobody. To ignore a member who posts too much, open their page.</p>'})()+'<button type="button" class="tlink small" data-act="why-ign">Why ignore instead of block?</button></div><div class="card stack"><h2>Moved?</h2><button type="button" class="btn block" data-act="move-form" '+(S.readOnly?'disabled':'')+'>Change my grid</button></div>'+
+  const settings=mine?'<div class="card stack"><h2>Feedback</h2><p class="small muted" style="margin:0">Tell us what to improve. It isn&#39;t posted anywhere.</p><button type="button" class="btn block" data-act="feedback">Send feedback</button></div><div class="card stack"><h2>Members you ignore</h2>'+(()=>{const g=Object.keys(ignored()).filter(k=>S.members[k]);return g.length?'<div class="list">'+g.map(k=>'<div class="li"><span class="tx"><span class="t">'+esc(nameOf(k))+'</span><span class="s">'+esc(gridName(S.members[k].cell))+'</span></span><button type="button" class="tlink" data-act="ign" data-v="'+k+'">Stop ignoring</button></div>').join("")+'</div>':'<p class="small muted" style="margin:0">Nobody. To ignore a member who posts too much, open their page.</p>'})()+'<button type="button" class="tlink small" data-act="why-ign">Why ignore instead of block?</button></div><div class="card stack"><h2>Moved?</h2><button type="button" class="btn block" data-act="move-form" '+(S.readOnly?'disabled':'')+'>Change my grid</button></div>'+(window.CPAccount&&window.CPAccount.deleteAccount?'<div class="card stack"><h2>Delete my account</h2><p class="small muted" style="margin:0">Takes you off the member list and removes your key from this phone. <a href="https://citizensparty.ca/privacy" target="_blank" rel="noopener">Privacy policy</a></p><button type="button" class="btn block" data-act="del-acct">Delete my account</button></div>':'')+
     '<div class="row2"><button type="button" class="btn" data-act="intro-replay">Replay the tutorial</button><button type="button" class="btn" data-act="help">How it works</button></div>'+(window.CPAccount?window.CPAccount.cardHtml():'')+(S.isOwner&&DEMO()?ownerTools():''):'';
   const tabs=["Votes <span class=\"tcount\">"+MV.all.length+"</span>","Proposals <span class=\"tcount\">"+props.length+"</span>"].concat(mine?["Settings"]:[]);
   return '<div style="display:flex;gap:12px;align-items:center">'+avatar(uid,52)+'<div><h1>'+esc(nameOf(uid))+'</h1><div class="muted">'+(mine?'Your record':'Member record')+' · '+gridLink(S.members[uid].cell,gridName(S.members[uid].cell))+'</div>'+(mine?'':'<div class="ignrow"><button type="button" class="tlink" data-act="ign" data-v="'+uid+'">'+(ignored()[uid]?'Stop ignoring':'Ignore this member')+'</button> · <button type="button" class="tlink" data-act="why-ign">Why?</button></div>')+'</div></div>'+noticeCard(noticeList({member:uid}),"mem-"+uid)+
@@ -1982,6 +2000,8 @@ document.addEventListener("click",e=>{
     case"open-cast":go({type:"cast",id:v});break;
     case"back":back();break;
     case"feedback":go({type:"feedback",about:v||""});break;
+    case"report":go({type:"feedback",about:"report",id:v});break;
+    case"del-acct":deleteAccount();break;
     case"fb-send":sendFeedback();break;
     case"why-lock":askBox("Why the 72-hour wait?",WHY_LOCK,[["","OK",true]]);break;
     case"why-ign":askBox("Why ignore instead of block?",WHY_IGN,[["","OK",true]]);break;
@@ -2076,7 +2096,7 @@ async function boot(){
   if(user){try{S.me=await user.id();S.isOwner=await user.isOwner();S.canWrite=await user.can("data.write");if(S.canWrite===false)S.readOnly=true}catch(e){}}
   S.ready=true;
   if(!db||!S.me){render();return}
-  const last={};const sub=(path,key)=>db.collection(path).onSnapshot(s=>{(S.loaded=S.loaded||{})[key]=true;const o={};s.docs.forEach(d=>{o[d.id]=Object.assign({},d.data(),{id:d.id})});const j=JSON.stringify(o);if(last[key]===j)return;last[key]=j;S[key]=o;S.rev=S.rev||{};S.rev[key]=(S.rev[key]||0)+1;C={};if(key==="meets")S.odocs=meetingsByOffice();refresh()},()=>{});
+  const last={};const sub=(path,key)=>db.collection(path).onSnapshot(s=>{(S.loaded=S.loaded||{})[key]=true;const o={};s.docs.forEach(d=>{const x=d.data();if(key==="members"&&x&&x.left)return;o[d.id]=Object.assign({},x,{id:d.id})});const j=JSON.stringify(o);if(last[key]===j)return;last[key]=j;S[key]=o;S.rev=S.rev||{};S.rev[key]=(S.rev[key]||0)+1;C={};if(key==="meets")S.odocs=meetingsByOffice();refresh()},()=>{});
   sub("members","members");sub("turnout","votes");sub("ballots","ballots");sub("stamps","stamps");sub("items","rawItems");sub("ends","ends");sub("meetings","meets");sub("chain","chain");
   db.doc("config/settings").onSnapshot(s=>{(S.loaded=S.loaded||{}).cfg=true;if(s.exists&&DEMO()){const d=s.data();const num=(x,dflt)=>x==null||isNaN(Number(x))?dflt:Number(x);S.cfg={hours:num(d.hours,168)||168,minVoters:num(d.minVoters,5)||5,penalty:num(d.penalty,72),probation:num(d.probation,0)}}refresh()},()=>{});
   render();

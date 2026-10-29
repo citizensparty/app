@@ -367,6 +367,26 @@ async def main():
             r = json.loads(await ws.recv())
             while r[0] != "OK": r = json.loads(await ws.recv())
         check(r[2] is False and "before the record starts" in r[3], "a proposal dated before the record starts is refused (%s)" % r[3])
+        # 8. Google Play: Report on someone else's proposal, and Delete my account
+        iid = next(dict((t[0], t[1]) for t in e["tags"] if len(t) > 1)["d"][6:] for e in await read_all(UA, OWNER, "items") if "Every grid keeps its own record." in e["content"])
+        await opg.evaluate("id=>{const b=document.createElement('button');b.dataset.act='open-item';b.dataset.v=id;document.getElementById('app').appendChild(b);b.click()}", iid); await opg.wait_for_timeout(500)
+        await opg.click("[data-act=report]"); await opg.wait_for_timeout(300)
+        check("Report this proposal" in await opg.inner_text("#app") and "Every grid keeps its own record." in await opg.inner_text("#app"), "the owner can report Alice's proposal; the report screen shows it")
+        await opg.fill("#fb-msg", "A test report."); await opg.click("#fb-go"); await opg.wait_for_timeout(1500)
+        check("didn't send" in await opg.inner_text("#fb-st"), "...and sends it to the feedback inbox (none in this test, so it says it didn't send)")
+        await apg.evaluate("id=>{const b=document.createElement('button');b.dataset.act='open-item';b.dataset.v=id;document.getElementById('app').appendChild(b);b.click()}", iid); await apg.wait_for_timeout(500)
+        check(await apg.locator("[data-act=report]").count() == 0, "...but Alice can't report her own proposal")
+        await dpg.click("[data-act=tab][data-v=me]"); await dpg.wait_for_timeout(500)
+        await dpg.click('.pills[data-car=mem] [data-act=car][data-id="2"]'); await dpg.wait_for_timeout(600)
+        await dpg.eval_on_selector("[data-act=del-acct]", "e=>e.click()"); await dpg.wait_for_timeout(300)
+        check("Write down your 12 words first" in await dpg.inner_text(".qbox"), "Delete my account asks first, and says to keep the 12 words")
+        await dpg.click(".qbox [data-ask=del]")
+        await wait_for(lambda: _member_left(UA, alice), "...then Alice's member record on host A says she left", 20)
+        await dpg.click(".qbox [data-ask]"); await dpg.wait_for_timeout(3000)
+        check("Welcome back" in await dpg.inner_text("body") and not await dpg.evaluate("Object.keys(localStorage).some(k=>k.startsWith('citizens-hasrec'))"), "...and her key is gone from that phone")
+        await opg.reload(); await opg.wait_for_timeout(4000)
+        await opg.evaluate("id=>{const b=document.createElement('button');b.dataset.act='open-member';b.dataset.v=id;document.getElementById('app').appendChild(b);b.click()}", alice); await opg.wait_for_timeout(500)
+        check("Member record" not in await opg.inner_text("#app"), "the owner's app no longer lists her as a member")
         print("page errors:", oerr + aerr + derr)
         check(not (oerr + aerr + derr), "no page errors")
         await b.close()
@@ -392,6 +412,10 @@ async def _has_doc(url, as_secret, d):
 
 async def _item_on(url, text):
     return any(text in e["content"] for e in await read_all(url, OWNER, "items"))
+
+
+async def _member_left(url, who):
+    return any(json.loads(e["content"]).get("left") for e in await read_all(url, OWNER, "members") if e["pubkey"] == who)
 
 
 async def _has(url, as_secret, c, author):

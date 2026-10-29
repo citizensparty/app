@@ -5,8 +5,9 @@
 #   tools/build_native.sh --debug    debug APK only (skips the release keystore)
 #   tools/build_native.sh --ios      (on a Mac) build web app + icons, sync native/ios; no Android
 #
-# Output: dist/downloads/citizensparty-<version>.apk          (signed release)
+# Output: dist/downloads/citizensparty-<version>.apk          (signed release, for the website)
 #         dist/downloads/citizensparty-<version>-debug.apk
+#         dist/play/citizensparty-<version>.aab                 (signed app bundle for Google Play; not on the website)
 # Version comes from native/package.json. Safe to re-run.
 set -euo pipefail
 
@@ -81,9 +82,15 @@ if [[ $DEBUG_ONLY -eq 0 ]]; then
   TASKS+=(assembleRelease)
 fi
 
-# 4. Gradle.
+# 4. Gradle. JDK 24's optimizing compiler (C2) crashes Gradle on this machine since Oct 29 (SIGSEGV in
+# RegionNode::Ideal), so every Java process in the build uses the simpler compiler (a little slower, same output).
+export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:--XX:TieredStopAtLevel=1}"
 cd "$NATIVE/android"
 ./gradlew --no-daemon -q "${TASKS[@]}"
+
+# Google Play: an app bundle, signed with the same key (our upload key). Play sends each phone only its own copy of
+# Tor, so the bundle carries the Intel copies too (Chromebooks, emulators); the 25 MB website limit doesn't apply.
+if [[ $DEBUG_ONLY -eq 0 ]]; then ./gradlew --no-daemon -q -PallAbis bundleRelease; fi
 
 # 5. Collect outputs.
 mkdir -p "$OUT"
@@ -91,6 +98,11 @@ APKS="$NATIVE/android/app/build/outputs/apk"
 cp "$APKS/debug/app-debug.apk" "$OUT/citizensparty-$VERSION-debug.apk"
 if [[ $DEBUG_ONLY -eq 0 ]]; then
   cp "$APKS/release/app-release.apk" "$OUT/citizensparty-$VERSION.apk"
+fi
+if [[ $DEBUG_ONLY -eq 0 ]]; then
+  mkdir -p "$REPO/dist/play"
+  cp "$NATIVE/android/app/build/outputs/bundle/release/app-release.aab" "$REPO/dist/play/citizensparty-$VERSION.aab"
+  ls -lh "$REPO/dist/play/citizensparty-$VERSION.aab"
 fi
 chmod 644 "$OUT"/citizensparty-"$VERSION"*.apk
 ls -lh "$OUT"/citizensparty-"$VERSION"*.apk

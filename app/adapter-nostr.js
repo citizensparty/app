@@ -225,6 +225,15 @@ async function publish(ev){
   if(/^(blocked|invalid)/.test(why)){outbox=outbox.filter(x=>x.id!==ev.id);saveOutbox();throw new Error(why.replace(/^\w+: /,""))}
   return{ok:true,queued:true};
 }
+// Delete my account: replaces your member record with {left:true} (apps then drop you from every grid and count), then
+// removes your key and the app's records from this phone. Secret ballots were never linked to you, so they stay; the
+// same 12 words can join again later.
+async function deleteAccount(){if(!sk)throw new Error("No key on this device.");
+  const r=await publish(signEv(docTemplate("members/"+me,{left:true,at:Date.now()})));if(r.queued)throw new Error("offline");
+  await SEC.del("citizens-sk");
+  try{for(const k of Object.keys(localStorage))if(k.startsWith("citizens-"))localStorage.removeItem(k)}catch(e){}
+  await new Promise(res=>{try{const q=indexedDB.deleteDatabase("citizens-copy");q.onsuccess=q.onerror=q.onblocked=()=>res()}catch(e){res()}});
+  sk=null;return true}
 // repair: after a host has sent everything it has, give it any of this member's own records it's missing (hosts copy
 // everyone else's from each other)
 const repairing=new Set();
@@ -625,9 +634,9 @@ function start(){if(started)return started;started=(async()=>{
   loadPending();let stT=null;listeners.push(()=>{if(stT)return;stT=setTimeout(()=>{stT=null;stampTick();flushBallots()},800)});setInterval(stampTick,60000);setTimeout(stampTick,500);
   window.CPAccount={closeBackable,cardHtml,me:()=>me,hosts:hostStatus,approve:approveScreen,synced:()=>membersSynced,
     unsent:d=>outbox.some(e=>tagOf(e,"d")===d), // a record of yours no host has confirmed yet
-    online:()=>[...relays.values()].filter(r=>r.ok).length,wasMember:()=>!!lsGet("citizens-hasrec-"+me)};
+    online:()=>[...relays.values()].filter(r=>r.ok).length,wasMember:()=>!!lsGet("citizens-hasrec-"+me)&&!(docVal("members/"+me)||{}).left,deleteAccount};
   // remembered once this key has a member record, so a reload that can't reach the hosts never asks for an address
-  const markRec=()=>{if(!lsGet("citizens-hasrec-"+me)&&docVal("members/"+me))lsSet("citizens-hasrec-"+me,"1")};listeners.push(markRec);markRec();
+  const markRec=()=>{if(!lsGet("citizens-hasrec-"+me)&&docVal("members/"+me)&&!docVal("members/"+me).left)lsSet("citizens-hasrec-"+me,"1")};listeners.push(markRec);markRec();
   return{db,user,downloads,voter};
 })();return started}
 window.claude={__nostr:true,use:async n=>{const r=await start();if(r===LOCAL)return LOCAL?LOCAL.use(n):null;return r?r[n]||null:null}};
