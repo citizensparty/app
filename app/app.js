@@ -910,8 +910,11 @@ function nHidden(){try{return JSON.parse(localStorage.getItem(NHID)||"{}")}catch
 function hm(ms){const m=Math.max(1,Math.ceil(ms/6e4)),h=Math.floor(m/60);return h>=1?plural(h,"hour")+(m%60?" "+plural(m%60,"minute"):""):plural(m,"minute")}
 // In a regular web browser (not the app, not Tor Browser) a host sees the voter's internet address: a red warning on
 // every page's notices and on every ballot, which can't be hidden (the user's call, Oct 28).
-function plainRoute(){return !!(S.voter&&!S.voter.native&&S.voter.route&&S.voter.route()==="plain")}
-const PRIV_HTML='<b>For maximum secrecy, vote in the <a href="/download.html">Android app</a> or <a href="https://www.torproject.org/download/" target="_blank" rel="noopener">Tor Browser</a>.</b> In a regular browser, a member acting in bad faith could run a host and match internet addresses to votes.';
+function plainRoute(){return !!(S.voter&&S.voter.route&&S.voter.route()==="plain")} // the iPhone app too, until Orbot is on
+const PRIV_WEB='<b>For maximum secrecy, vote in the <a href="/download.html">Android app</a> or <a href="https://www.torproject.org/download/" target="_blank" rel="noopener">Tor Browser</a>.</b> In a regular browser, a member acting in bad faith could run a host and match internet addresses to votes.';
+// the iPhone app (no Tor of its own; Apple's rules: don't point to other platforms): Orbot, a free Tor app
+const IOS=!!(window.Capacitor&&window.Capacitor.getPlatform&&window.Capacitor.getPlatform()==="ios");
+const PRIV_HTML=IOS?'<b>For maximum secrecy, turn on <a href="https://orbot.app" target="_blank" rel="noopener">Orbot</a>, a free Tor app, before you vote.</b> Without it, a member acting in bad faith could run a host and match internet addresses to votes.':PRIV_WEB;
 function noticeList(o){o=o||{};const out=[];const uid=o.member||S.me;const self=uid===S.me;const e=engine(uid);if(!e)return out;
   if(self&&!o.member&&plainRoute())out.push({id:"priv",sig:"1",kind:"block",keep:true,html:PRIV_HTML});
   if(self&&!o.member&&BETA_WAIVE)out.push({id:"trial",sig:"1",kind:"beta",html:'<b>We\'re still testing.</b> Votes during testing are for practice. They won\'t become party policy, and we may clear them before the official launch.'});

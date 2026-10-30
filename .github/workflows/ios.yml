@@ -1,0 +1,134 @@
+# The iPhone app, built on GitHub's Macs (Apple's build tools only run on a Mac).
+#
+# Run it by hand: GitHub → Actions → "iPhone app" → Run workflow.
+#   - Always: builds the app for iPhone without signing, to show it compiles.
+#   - With "Send to TestFlight" ticked: signs it with the party's Apple certificate and uploads it to App Store Connect.
+#
+# Secrets (repo Settings → Secrets and variables → Actions), only needed for TestFlight; see docs/app-store.md:
+#   APPLE_TEAM_ID          the 10-character Team ID from developer.apple.com → Membership
+#   IOS_DIST_P12_BASE64    the Apple Distribution certificate with its private key (.p12), base64
+#   IOS_DIST_P12_PASSWORD  that .p12's password
+#   IOS_PROFILE_BASE64     the App Store provisioning profile for ca.citizensparty.app (.mobileprovision), base64
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8_BASE64   an App Store Connect API key (role: App Manager), for the upload
+#
+# Only someone who can run workflows on this repo can use the secrets; runs started by pull requests never get them.
+# The party key is never involved: the app carries only the party's public key.
+name: iPhone app
+
+on:
+  workflow_dispatch:
+    inputs:
+      testflight:
+        description: Send to TestFlight (needs the Apple secrets)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Use the newest Xcode
+        run: |
+          X="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$X/Contents/Developer"
+          xcodebuild -version
+
+      - name: Build the web app and copy it into the iPhone project
+        run: |
+          python3 -m pip install --quiet --break-system-packages pillow || python3 -m pip install --quiet pillow
+          tools/build_native.sh --ios
+
+      - name: Compile for iPhone (no signing)
+        working-directory: native/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build | tail -n 40
+
+      # ----- TestFlight (only when ticked) -----
+      - name: Check the Apple secrets are set
+        if: inputs.testflight
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
+          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          KEY: ${{ secrets.ASC_KEY_P8_BASE64 }}
+        run: |
+          for v in TEAM P12 PROFILE KEY; do [ -n "${!v}" ] || { echo "::error::missing secret for $v (see docs/app-store.md)"; exit 1; }; done
+
+      - name: Install the certificate and profile
+        if: inputs.testflight
+        env:
+          P12: ${{ secrets.IOS_DIST_P12_BASE64 }}
+          P12_PASS: ${{ secrets.IOS_DIST_P12_PASSWORD }}
+          PROFILE: ${{ secrets.IOS_PROFILE_BASE64 }}
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          KC="$RUNNER_TEMP/sign.keychain-db"; KCP="$(uuidgen)"
+          security create-keychain -p "$KCP" "$KC"
+          security set-keychain-settings -lut 3600 "$KC"
+          security unlock-keychain -p "$KCP" "$KC"
+          echo "$P12" | base64 --decode > "$RUNNER_TEMP/dist.p12"
+          security import "$RUNNER_TEMP/dist.p12" -k "$KC" -P "$P12_PASS" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KCP" "$KC" >/dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          rm "$RUNNER_TEMP/dist.p12"
+          echo "$PROFILE" | base64 --decode > "$RUNNER_TEMP/app.mobileprovision"
+          UUID="$(security cms -D -i "$RUNNER_TEMP/app.mobileprovision" | plutil -extract UUID raw -)"
+          NAME="$(security cms -D -i "$RUNNER_TEMP/app.mobileprovision" | plutil -extract Name raw -)"
+          for d in "$HOME/Library/MobileDevice/Provisioning Profiles" "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"; do
+            mkdir -p "$d"; cp "$RUNNER_TEMP/app.mobileprovision" "$d/$UUID.mobileprovision"; done
+          echo "PROFILE_NAME=$NAME" >> "$GITHUB_ENV"
+          # sign only the app itself by hand (the Swift packages it uses must not get a profile)
+          python3 - "$TEAM" "$NAME" <<'EOF'
+          import pathlib, sys
+          team, name = sys.argv[1], sys.argv[2]
+          p = pathlib.Path("native/ios/App/App.xcodeproj/project.pbxproj"); s = p.read_text()
+          new = ('CODE_SIGN_STYLE = Manual;\n\t\t\t\tCODE_SIGN_IDENTITY = "Apple Distribution";\n'
+                 f'\t\t\t\tDEVELOPMENT_TEAM = {team};\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{name}";')
+          assert s.count("CODE_SIGN_STYLE = Automatic;") == 2
+          p.write_text(s.replace("CODE_SIGN_STYLE = Automatic;", new))
+          EOF
+
+      - name: Sign and upload to TestFlight
+        if: inputs.testflight
+        working-directory: native/ios/App
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.ASC_KEY_P8_BASE64 }}
+        run: |
+          set -o pipefail
+          KEY="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"; echo "$ASC_KEY" | base64 --decode > "$KEY"
+          VERSION="$(python3 -c "import json;print(json.load(open('../../package.json'))['version'])")"
+          xcodebuild -project App.xcodeproj -scheme App -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            archive | tail -n 40
+          cat > "$RUNNER_TEMP/export.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>$TEAM</string>
+            <key>signingStyle</key><string>manual</string>
+            <key>signingCertificate</key><string>Apple Distribution</string>
+            <key>provisioningProfiles</key><dict><key>ca.citizensparty.app</key><string>$PROFILE_NAME</string></dict>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/App.xcarchive" -exportOptionsPlist "$RUNNER_TEMP/export.plist" \
+            -exportPath "$RUNNER_TEMP/export" -authenticationKeyPath "$KEY" -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" -allowProvisioningUpdates
+          rm -f "$KEY"
+          echo "Uploaded $VERSION (build ${{ github.run_number }}). It shows in App Store Connect → TestFlight after Apple processes it (10–30 min)."
+
+      - name: Clean up the keychain
+        if: always() && inputs.testflight
+        run: security delete-keychain "$RUNNER_TEMP/sign.keychain-db" || true

@@ -348,7 +348,7 @@ const copyBtn='<button class="btn block" data-cpa="copy">Copy the words</button>
 function createKey(done){
   const w=N.generateSeedWords();
   const el=screen(brand+'<h1>Your 12 words</h1><p class="lede">Save these, in order: write them on paper, or copy them into a password manager or a document you print. They&#39;re the only way back in if you lose this phone. Nobody can reset them for you.</p>'+wordsGrid(w)+copyBtn+
-    '<label class="cp-check"><input type="checkbox" id="cp-wrote"> I saved my 12 words</label><button class="btn pri block" data-cpa="next" disabled>Save my key</button><button class="tlink small" data-cpa="back">Back</button>');
+    '<label class="cp-check"><input type="checkbox" id="cp-wrote"> I saved my 12 words</label><button class="btn pri block" data-cpa="next" disabled>Save my key</button><p class="small muted">By saving your key, you agree to <a href="https://citizensparty.ca/safety" target="_blank" rel="noopener">our rules</a>: no hate, threats, illegal content or content that exploits children.</p><button class="tlink small" data-cpa="back">Back</button>');
   el.querySelector("#cp-wrote").onchange=e=>{el.querySelector('[data-cpa=next]').disabled=!e.target.checked};
   el.onclick=async e=>{const a=e.target.closest("[data-cpa]");if(!a)return;const act=a.dataset.cpa;if(act==="back")return welcome(done);if(act==="copy")return copyWords(w,a);
     if(act==="next"){a.disabled=true;await saveWords(w);done()}};
@@ -546,8 +546,9 @@ const savePending=()=>lsSet(ballotsKey(),JSON.stringify(pendingBallots));
 const TOR=(()=>{const P=window.Capacitor&&window.Capacitor.Plugins;return P&&P.CitizensTor||null})();
 const NATIVE=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
 let torBrowser=/\.onion$/.test(location.hostname);
-function torCheck(){if(TOR||torBrowser||!/^https?:$/.test(location.protocol))return;
-  fetch("/api/tor",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.tor)torBrowser=true}).catch(()=>{})} // the site knows Tor's exits
+// The iPhone app has no Tor of its own, but asks the site too: with Orbot (a Tor app) on, its traffic arrives from Tor.
+function torCheck(){if(TOR||(torBrowser&&!NATIVE)||!(NATIVE||/^https?:$/.test(location.protocol)))return;
+  fetch((NATIVE?SITE:"")+"/api/tor",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{if(j)torBrowser=!!j.tor}).catch(()=>{})} // the site knows Tor's exits
 async function torState(){if(!TOR)return"none";try{const r=await TOR.status();return r&&r.state||"off"}catch(e){return"error"}}
 // waits up to ms for Tor; an error isn't the end: Tor is restarted (at most every 8 s) and the wait goes on
 let torKick=0;
@@ -611,7 +612,7 @@ function start(){if(started)return started;started=(async()=>{
   closeScreen();
   connectAll();
   // hosts on free tunnels get a new address when they restart: look again when the app comes back, goes online, or has no host
-  const again=()=>{refreshDir();fillHosts()};document.addEventListener("visibilitychange",()=>{if(!document.hidden)again()});window.addEventListener("online",again);
+  const again=()=>{refreshDir();fillHosts();if(NATIVE&&!TOR)torCheck()};document.addEventListener("visibilitychange",()=>{if(!document.hidden)again()});window.addEventListener("online",again);
   setInterval(()=>{if(![...relays.values()].some(r=>r.ok))again()},15000);setInterval(refreshDir,10*60000);
   subscribe({kinds:[KIND],"#c":["party","reg","hosts"]});
   subscribe({kinds:[KIND],"#c":["join"],authors:[me]});
