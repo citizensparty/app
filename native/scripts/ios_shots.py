@@ -35,7 +35,8 @@ def simctl(*a, check=True):
 
 # ----- the simulator: the biggest current iPhone, on the newest iOS -----
 types = json.loads(simctl("list", "devicetypes", "-j"))["devicetypes"]
-phone = [t for t in types if t["name"].startswith("iPhone") and "Pro Max" in t["name"]][-1]
+import re
+phone = max((t for t in types if re.fullmatch(r"iPhone \d+ Pro Max", t["name"])), key=lambda t: int(t["name"].split()[1]))
 rts = [r for r in json.loads(simctl("list", "runtimes", "-j"))["runtimes"] if r["platform"] == "iOS" and r["isAvailable"]]
 rt = sorted(rts, key=lambda r: [int(x) for x in r["version"].split(".")])[-1]
 print("simulator:", phone["name"], "iOS", rt["version"])
