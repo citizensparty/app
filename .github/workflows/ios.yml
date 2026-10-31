@@ -2,6 +2,8 @@
 #
 # Run it by hand: GitHub → Actions → "iPhone app" → Run workflow.
 #   - Always: builds the app for iPhone without signing, to show it compiles.
+#   - With "Screenshots" ticked (the default): runs it in Apple's iPhone simulator and saves pictures of its screens
+#     (download them at the bottom of the run's page, under Artifacts). See native/scripts/ios_shots.py.
 #   - With "Send to TestFlight" ticked: signs it with the party's Apple certificate and uploads it to App Store Connect.
 #
 # Secrets (repo Settings → Secrets and variables → Actions), only needed for TestFlight; see docs/app-store.md:
@@ -22,6 +24,10 @@ on:
         description: Send to TestFlight (needs the Apple secrets)
         type: boolean
         default: false
+      screenshots:
+        description: Screenshots in the iPhone simulator
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -31,7 +37,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Use the newest Xcode
         run: |
@@ -49,6 +55,23 @@ jobs:
         run: |
           xcodebuild -project App.xcodeproj -scheme App -configuration Release \
             -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build | tail -n 40
+
+      # ----- Screenshots (only when ticked) -----
+      - name: Run it in the iPhone simulator and take screenshots
+        if: inputs.screenshots
+        run: |
+          python3 tools/build.py --no-host > /dev/null
+          (cd native/ios/App && xcodebuild -project App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath "$RUNNER_TEMP/dd" CODE_SIGNING_ALLOWED=NO build | tail -n 5)
+          python3 native/scripts/ios_shots.py "$RUNNER_TEMP/dd/Build/Products/Release-iphonesimulator/App.app" "$RUNNER_TEMP/shots/pictures"
+
+      - name: Save the screenshots
+        if: inputs.screenshots
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: iphone-screenshots
+          path: ${{ runner.temp }}/shots/pictures
+          retention-days: 30
 
       # ----- TestFlight (only when ticked) -----
       - name: Check the Apple secrets are set
