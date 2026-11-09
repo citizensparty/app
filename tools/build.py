@@ -105,8 +105,10 @@ PAGE_CSS = """
 .hostlist{display:flex;flex-direction:column;gap:8px;max-width:46em;margin-bottom:20px}
 .hostrow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
 .hostrow code{flex:1;min-width:0;overflow-x:auto;white-space:pre;background:none;border:0}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--mute);flex:none}
-.dot.on{background:#1F9D55}.dot.off{background:#C0392B}
+.st{flex:none;display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;line-height:1;border-radius:999px;padding:6px 10px;white-space:nowrap;background:color-mix(in srgb,var(--mute) 16%,transparent);color:var(--ink2)}
+.st.on{background:var(--yes-soft);color:var(--yes)}
+.st.on::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.off{background:var(--no-soft);color:var(--no)}
 .keep{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .keep>div{display:flex;flex-direction:column;gap:10px;min-width:0}
 .dl.two{grid-template-columns:repeat(2,1fr)}
@@ -117,7 +119,8 @@ PAGE_CSS = """
 PAGES = {
     "host": ("Run a host · Citizens Party", "Keep a copy of the record on your own computer.", "https://citizensparty.ca/host", 'href="host.html"'),
     "constitution": ("Constitution · Citizens Party", "How our rules work, who holds what power, the risks, and the backup plan.", "https://citizensparty.ca/constitution", None),
-    "testers": ("Help us test · Citizens Party", "Help get the Citizens Party app on Google Play: test it for 14 days.", "https://citizensparty.ca/testers", None),
+    "testers": ("Help us test · Citizens Party", "Help get the Citizens Party app on Google Play: 4 quick steps, then keep it for 14 days.", "https://citizensparty.ca/testers", None),
+    "faq": ("Questions · Citizens Party", "More answers about how Citizens Party works: addresses, Tor, moving grids, the code and more.", "https://citizensparty.ca/faq", None),
     "safety": ("Safety · Citizens Party", "Our rules for posts, how to report, and our child safety standards.", "https://citizensparty.ca/safety", None),
     "privacy": ("Privacy · Citizens Party", "What the Citizens Party app and website keep, and what they don't.", "https://citizensparty.ca/privacy", None),
     "download": ("Get the app · Citizens Party", "Join your grid and vote from your phone.", "https://citizensparty.ca/download", 'class="btn pri sm" href="download.html"'),
@@ -143,10 +146,10 @@ PAGE_JS = """<script>
   var rows=document.querySelectorAll(".hostrow[data-url]");if(!rows.length)return;
   fetch("hosts.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null}).catch(function(){return null}).then(function(d){
     var seen={};((d&&d.hosts)||[]).forEach(function(h){seen[h.url]=h.lastOk});
-    [].forEach.call(rows,function(row){var u=row.getAttribute("data-url"),dot=row.querySelector(".dot"),st=row.querySelector(".st");
+    [].forEach.call(rows,function(row){var u=row.getAttribute("data-url"),st=row.querySelector(".st");
       var c=new AbortController(),t=setTimeout(function(){c.abort()},5000);
-      fetch(u.replace(/^ws/,"http"),{headers:{Accept:"application/nostr+json"},signal:c.signal}).then(function(r){return r.json()}).then(function(){clearTimeout(t);dot.className="dot on";st.textContent="online"}).catch(function(){
-        dot.className="dot off";st.textContent=seen[u]?"offline · last seen "+new Date(seen[u]*1000).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"offline"})});
+      fetch(u.replace(/^ws/,"http"),{headers:{Accept:"application/nostr+json"},signal:c.signal}).then(function(r){return r.json()}).then(function(){clearTimeout(t);st.className="st on";st.textContent="Online"}).catch(function(){
+        st.className="st off";st.textContent=seen[u]?"Offline · last seen "+new Date(seen[u]*1000).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"Offline"})});
   });
 })();
 </script>"""
@@ -206,6 +209,8 @@ def build_pages(out):
     fills = {
         "{{HOSTWIN}}": dlbtn("citizens-host-windows.zip", "Download for Windows", hv),
         "{{HOSTLINUX}}": dlbtn("citizens-host-linux-x64.tar.gz", "Download for Linux", hv) + dlbtn("citizens-host-linux-arm64.tar.gz", "Raspberry Pi (64-bit)", hv, "ghost"),
+        "{{HOSTLINUX64}}": dlbtn("citizens-host-linux-x64.tar.gz", "Download for Linux", hv),
+        "{{HOSTARM}}": dlbtn("citizens-host-linux-arm64.tar.gz", "Download for Raspberry Pi", hv),
         "{{SUMS}}": '<a href="downloads/SHA256SUMS.txt">SHA256SUMS.txt</a>',
         "{{COMPOSE}}": '<a class="btn pri" href="downloads/docker-compose.yml" download>Download docker-compose.yml</a>',
         "{{CMD_INSTALL}}": cmd("curl -fsSL https://citizensparty.ca/install.sh | sudo sh"),
@@ -221,11 +226,11 @@ def build_pages(out):
     builtin = ""
     if hosts:
         builtin = ('<div class="sechd"><div class="k">Built in</div><h2>The party\'s own hosts</h2><p>Your host starts by copying from these, then finds the rest of the network by itself.</p></div><div class="hostlist">'
-                   + "".join('<div class="hostrow" data-url="' + esc(h["url"]) + '"><span class="dot"></span><code>' + esc(h["url"]) + '</code><span class="st mute small">checking…</span></div>' for h in hosts) + '</div>')
+                   + "".join('<div class="hostrow" data-url="' + esc(h["url"]) + '"><code>' + esc(h["url"]) + '</code><span class="st">Checking…</span></div>' for h in hosts) + '</div>')
     key = ""
     if owners:
         key = ('<div class="keybox"><div><b>Party key.</b> <span class="mute">Your host uses this to check that records really come from the party.</span></div>'
-               + "".join(cmd(k) for k in owners) + '<span class="mute small">The same key as written in the app: ' + ", ".join(npub(k) for k in owners) + '</span></div>')
+               + "".join(cmd(k) for k in owners) + '<details class="npub"><summary>Show the app format</summary><span class="mute small">The same key as written in the app: ' + ", ".join(npub(k) for k in owners) + '</span></details></div>')
     fills["{{PARTY}}"] = (builtin + '<div class="keys">' + key + '</div>') if (builtin or key) else ""
     apks = sorted(dl.glob("citizensparty-*.apk"))
     fills["{{APK}}"] = (dlbtn(apks[-1].name, "Download for Android", re.search(r"citizensparty-(.+)\.apk", apks[-1].name).group(1))
@@ -329,6 +334,7 @@ def build_site():
     for f in (ROOT / "landing").glob("og*.png"):
         shutil.copy(f, out / f.name)
     shutil.copytree(ROOT / "landing/shots", out / "shots")  # app screenshots (tools/make_shots.py)
+    shutil.copytree(ROOT / "landing/img", out / "img")  # the App Store badge, the testers steps' phone screenshots
     build_pages(out)
     print("built", out)
 

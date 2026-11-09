@@ -12,7 +12,7 @@ Java keystore), then run the PEPK command it shows on the keystore in `~/.citize
 ## Store listing
 
 - **App name:** Citizens Party
-- **Short description (80):** A BC political party run by its members. Propose and vote from home, in secret.
+- **Short description (80):** A member-run BC party in the making. Propose and vote from home, in secret.
 - **Full description:**
 
   Citizens Party is a political party for British Columbia that runs on this app. Members propose, vote on and decide everything, from what we stand for to who speaks for us, from home.
@@ -23,7 +23,11 @@ Java keystore), then run the PEPK command it shows on the keystore in `~/.citize
   • Nobody can take it over. There's no central server and no board. The record is kept by many computers run by members, and anyone can run one.
   • No fees, no names, no tracking. You join with 12 words, not an email address.
 
-  We're in beta: votes are a trial run and don't bind the party yet. The code is open source (AGPL-3.0): github.com/citizensparty/app
+  Please note: Citizens Party is not yet a registered political party. It isn't registered with Elections BC and doesn't
+  run candidates yet. For now it's an open experiment: a working test of how a party could be run by its members. Votes in
+  the app are a trial run and don't bind anyone.
+
+  The code is open source (AGPL-3.0): github.com/citizensparty/app
 
 - **Category:** Social (or News & Magazines). **Tags:** politics, community.
 - **Contact email:** admin@citizensparty.ca. **Website:** https://citizensparty.ca. **Privacy policy:** https://citizensparty.ca/privacy

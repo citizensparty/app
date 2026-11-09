@@ -148,7 +148,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="c-rules">
     <div class="wrap">
       <div class="sechd"><div class="k">The rules</div><h2>What the constitution says, and how the app makes it happen.</h2></div>
       <div class="arts">
@@ -157,21 +157,21 @@
         <div class="art"><span class="n">Article 3</span><h3>Only the people who elect someone can remove them.</h3><p>Anyone elected can be recalled at any time, but only by the members who elected them.</p><p class="how"><span class="note soon">Coming</span> <b>In the app:</b> elections and recalls are built and switched on once members start electing leads. Only the members who could vote in an election will see its recall vote.</p></div>
         <div class="art"><span class="n">Article 4</span><h3>Everything is public, except how you voted.</h3><p>Every proposal, result and party message is public. There&#39;s no inner circle and no private channel. Your own ballot is secret.</p><p class="how"><b>In the app:</b> anyone can read the whole record. Ballots are cast with a separate voting key that nobody can trace back to you, not even the party.</p></div>
         <div class="art"><span class="n">Article 5</span><h3>One member, one vote.</h3><p>Every member gets exactly one vote on each question, and nobody can vote for you or change your vote.</p><p class="how"><b>In the app:</b> your phone signs your vote with your key before it leaves. Every three months each member gets one voting stamp, so a second ballot won&#39;t count.</p></div>
-        <div class="art"><span class="n">Article 6</span><h3>Neighborhoods decide first.</h3><p>Members belong to the neighborhood they live in. Each neighborhood sets up to 10 principles of its own, then can send one to all of BC.</p><p class="how"><b>In the app:</b> BC is split into about 120 neighborhoods (the app calls them grids). The charts below show how a proposal becomes a decision.</p></div>
+        <div class="art"><span class="n">Article 6</span><h3>Grids decide first.</h3><p>Members belong to the grid they live in. Each grid sets up to 10 principles of its own, then can send one to all of BC.</p><p class="how"><b>In the app:</b> BC is split into 123 grids. The charts below show how a proposal becomes a decision.</p></div>
         <div class="art"><span class="n">Article 7</span><h3>No fees, ever.</h3><p>Membership is free. Your voice doesn&#39;t depend on your wallet.</p><p class="how"><b>In the app:</b> there&#39;s no payment anywhere. The party pays only for its website.</p></div>
         <div class="art"><span class="n">Article 8</span><h3>No off switch.</h3><p>The record isn&#39;t kept in one place, so no one can shut the party down or lose its history.</p><p class="how"><b>In the app:</b> members run computers called hosts that each keep a full copy. Anyone can run one, <a href="host.html">on any computer</a>.</p></div>
       </div>
-      <p class="cap">During the beta, two waits are switched off so people can try everything: new members can vote right away (normally after 72 hours), and neighborhoods can vote with fewer than 20 members.</p>
+      <p class="cap">During the beta, two waits are switched off so people can try everything: new members can vote right away (normally after 72 hours), and grids can vote with fewer than 20 members.</p>
     </div>
   </section>
 
-  <section class="band">
+  <section class="band" id="c-how">
     <div class="wrap">
       <div class="sechd"><div class="k">How a proposal becomes a decision</div><h2>Supporters first, then a vote, all in 72 hours.</h2><p>Any member can propose a principle. Each proposal has 72 hours in total. In that time it needs enough supporters to go to a full vote, and a majority to pass.</p></div>
       <div class="fig">
-        <div class="timeline" role="img" aria-label="One 72-hour window: first it gathers supporters, then the whole neighborhood votes, and at hour 72 it's Passed, Rejected or Expired.">
-          <div class="tl a"><b>Gathering supporters</b><span>Yes votes from 5% of the neighborhood, at least 5.</span></div>
-          <div class="tl b"><b>The full vote</b><span>Every member of the neighborhood is asked. It closes early once everyone has voted.</span></div>
+        <div class="timeline" role="img" aria-label="One 72-hour window: first it gathers supporters, then the whole grid votes, and at hour 72 it's Passed, Rejected or Expired.">
+          <div class="tl a"><b>Gathering supporters</b><span>Yes votes from 5% of the grid, at least 5.</span></div>
+          <div class="tl b"><b>The full vote</b><span>Every member of the grid is asked. It closes early once everyone has voted.</span></div>
           <div class="tl c"><b>Result</b><span>Passed, Rejected, or Expired if it never got enough supporters</span></div>
         </div>
         <div class="ticks" aria-hidden="true"><span>Hour 0</span><span>Supporters reached</span><span>Hour 72</span></div>
@@ -180,8 +180,8 @@
       <div class="charts">
         <div class="fig chart">
           <h3>How much support a proposal needs</h3>
-          <p class="cap" style="margin:6px 0 14px">5% of the neighborhood, and never fewer than 5 people (or everyone, in a smaller neighborhood).</p>
-          <svg viewBox="0 0 360 230" role="img" aria-label="Bar chart. Neighborhood of 20 members needs 5 supporters; 50 needs 5; 100 needs 5; 200 needs 10; 500 needs 25.">
+          <p class="cap" style="margin:6px 0 14px">5% of the grid, and never fewer than 5 people (or everyone, in a smaller grid).</p>
+          <svg viewBox="0 0 360 230" role="img" aria-label="Bar chart. Grid of 20 members needs 5 supporters; 50 needs 5; 100 needs 5; 200 needs 10; 500 needs 25.">
             <g transform="translate(40,10)">
               <line x1="0" y1="180" x2="310" y2="180" stroke="var(--line)" stroke-width="2"/>
               <g fill="var(--accent)">
@@ -196,17 +196,17 @@
               </g>
               <g class="lbl" text-anchor="middle">
                 <text x="31" y="200">20</text><text x="93" y="200">50</text><text x="155" y="200">100</text><text x="217" y="200">200</text><text x="279" y="200">500</text>
-                <text x="155" y="220">members in the neighborhood</text>
+                <text x="155" y="220">members in the grid</text>
               </g>
             </g>
           </svg>
         </div>
         <div class="fig chart">
           <h3>Sending a principle to all of BC</h3>
-          <p class="cap" style="margin:6px 0 14px">Two steps. Both need more than half, and at least 5 neighborhoods must take part.</p>
-          <svg viewBox="0 0 360 230" role="img" aria-label="Step 1: more than half of the neighborhood's members vote Yes. Step 2: at least 5 neighborhoods take part, and more than half of all neighborhoods agree.">
+          <p class="cap" style="margin:6px 0 14px">Two steps. Both need more than half, and at least 5 grids must take part.</p>
+          <svg viewBox="0 0 360 230" role="img" aria-label="Step 1: more than half of the grid's members vote Yes. Step 2: at least 5 grids take part, and more than half of all grids agree.">
             <g font-family="var(--body)">
-              <text x="0" y="18" class="val">1. Your neighborhood</text>
+              <text x="0" y="18" class="val">1. Your grid</text>
               <text x="0" y="38" class="lbl">More than half of all its members vote Yes</text>
               <g transform="translate(0,52)">
                 <rect width="360" height="26" rx="6" fill="var(--line)"/>
@@ -215,7 +215,7 @@
                 <text x="184" y="46" class="lbl">half</text>
               </g>
               <text x="0" y="132" class="val">2. All of BC</text>
-              <text x="0" y="152" class="lbl">Each square is one neighborhood</text>
+              <text x="0" y="152" class="lbl">Each square is one grid</text>
               <g transform="translate(0,164)">
                 <g fill="var(--accent)">
                   <rect x="0" y="0" width="20" height="20" rx="4"/><rect x="24" y="0" width="20" height="20" rx="4"/><rect x="48" y="0" width="20" height="20" rx="4"/><rect x="72" y="0" width="20" height="20" rx="4"/><rect x="96" y="0" width="20" height="20" rx="4"/><rect x="120" y="0" width="20" height="20" rx="4"/><rect x="144" y="0" width="20" height="20" rx="4"/>
@@ -230,13 +230,13 @@
               </g>
             </g>
           </svg>
-          <p class="cap">If the neighborhood that sent it rewords or removes the principle, the BC-wide vote is cancelled.</p>
+          <p class="cap">If the grid that sent it rewords or removes the principle, the BC-wide vote is cancelled.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
+  <section id="c-power">
     <div class="wrap">
       <div class="sechd"><div class="k">Who holds what power</div><h2>Power is split up, and most of it belongs to members.</h2></div>
       <div class="fig pwrap">
@@ -250,25 +250,25 @@
           </tbody>
         </table>
       </div>
-      <p class="cap">After the beta, registrars will check each new member&#39;s ID, so every member is one real person. During the beta they let everyone in. The party key decides which registrars count and sets things like how long a vote lasts.</p>
+      <p class="cap">After the beta, registrars will check each new member&#39;s ID, so every member is one real person. During the beta they let everyone in. The party key decides which registrars count. Nobody can change how long a vote lasts or how many votes it needs: those rules are built into the app.</p>
       <h3 style="margin-top:28px">What nobody can do, not even the party</h3>
       <div class="never"><span>Change your vote</span><span>Vote as you</span><span>See how you voted</span><span>Expel you</span><span>Delete the record</span><span>Charge you a fee</span></div>
     </div>
   </section>
 
-  <section class="band">
+  <section class="band" id="c-risks">
     <div class="wrap">
       <div class="sechd"><div class="k">The risks, honestly</div><h2>No system is perfect. Here&#39;s where ours could fail.</h2><p>We&#39;d rather you hear it from us than find it later.</p></div>
       <div class="risks">
         <div class="risk"><h3>Whoever holds the party key can change things.</h3><p>The party key can choose the registrars and change the party&#39;s settings. If the wrong person got it, they could let in fake members, who could then outvote real ones.</p><p class="fix"><b>What protects you:</b> everything the key signs is public, so a change can&#39;t be hidden. The key is kept on paper and never on a computer that&#39;s always online. Below is the plan to hand it over.</p></div>
         <div class="risk"><h3>Registrars decide who gets in.</h3><p>A registrar could let in people who shouldn&#39;t be members, or keep out people who should.</p><p class="fix"><b>What protects you:</b> every approval is public and signed by the registrar that made it. A bad registrar can be removed, and every app stops trusting it.</p></div>
-        <div class="risk"><h3>The rules are only as good as the app.</h3><p>Since the app is the constitution, whoever writes the app writes the rules. Today, changing a rule means releasing a new version of the app.</p><p class="fix"><b>What protects you:</b> the app&#39;s code will be public at launch, so anyone can read it and check that it does what this page says.</p></div>
+        <div class="risk"><h3>The rules are only as good as the app.</h3><p>Since the app is the constitution, whoever writes the app writes the rules. Today, changing a rule means releasing a new version of the app.</p><p class="fix"><b>What protects you:</b> the app&#39;s code is public on <a href="https://github.com/citizensparty/app">GitHub</a>, so anyone can read it and check that it does what this page says.</p></div>
         <div class="risk"><h3>The website could go away.</h3><p>citizensparty.ca is where new members get the app and where apps first find the hosts. A web address can be lost or forgotten.</p><p class="fix"><b>What protects you:</b> apps and hosts already know each other without it, and both can be pointed at a new address.</p></div>
       </div>
     </div>
   </section>
 
-  <section>
+  <section id="c-key">
     <div class="wrap">
       <div class="sechd"><div class="k">The party key</div><h2>The plan: hand the key to people who answer to the members.</h2></div>
       <div class="plan">
@@ -279,9 +279,9 @@
     </div>
   </section>
 
-  <section class="band">
+  <section class="band" id="c-backup">
     <div class="wrap">
-      <div class="sechd"><div class="k">The backup plan</div><h2>If something goes badly wrong.</h2><p>The party&#39;s whole record is public and copied many times, and the app&#39;s code will be public too. Members always have what they need to set the party up again.</p></div>
+      <div class="sechd"><div class="k">The backup plan</div><h2>If something goes badly wrong.</h2><p>The party&#39;s whole record is public and copied many times, and the app&#39;s code is public too. Members always have what they need to set the party up again.</p></div>
       <div class="ifs">
         <div class="if">
           <div class="box bad"><b>The party key is lost</b>The paper is destroyed and there&#39;s no copy.</div>
@@ -302,15 +302,15 @@
           <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
           <div class="box"><b>The apps keep working</b>Every app and host already knows where the other hosts are, so voting carries on.</div>
           <div class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M14 6l6 6-6 6"/></svg></div>
-          <div class="box good"><b>Point the app somewhere new</b>In the app, Me, then Hosts, then Party website: Change. A fake site can&#39;t take over, because the settings still have to be signed with the party key.</div>
+          <div class="box good"><b>Point the app somewhere new</b>In the app, open your page, then Settings, then Hosts, then Party website: Change. A fake site can&#39;t take over, because the settings still have to be signed with the party key.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
+  <section id="c-change">
     <div class="wrap">
-      <div class="sechd" style="margin-bottom:0"><div class="k">Changing the constitution</div><h2>Today, by a new version of the app.</h2><p>For now, the rules change when the party releases a new version of the app. The code will be public, so anyone can see exactly what changed and when.</p>
+      <div class="sechd" style="margin-bottom:0"><div class="k">Changing the constitution</div><h2>Today, by a new version of the app.</h2><p>For now, the rules change when the party releases a new version of the app. The code is public, so anyone can see exactly what changed and when.</p>
       <p style="margin-top:22px"><a class="btn pri" href="download.html">Get the app</a></p></div>
     </div>
   </section>

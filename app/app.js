@@ -485,7 +485,8 @@ function liveSeries(it){const pts=ballotsOf(it).map(b=>[b.t,b.v]);
   pts.sort((a,b)=>a[0]-b[0]);const ser=[[0,0]];let y=0,n=0;
   if(!pts.length)return{ser,count:0,span:0,byOrder:true};
   const t0=pts[0][0],t1=pts[pts.length-1][0];
-  if(t1-t0<60e3*pts.length){pts.forEach(p=>{p[1]==="y"?y++:p[1]==="n"?n++:0;ser.push([y,n])});return{ser,count:pts.length,span:t1-t0,byOrder:true}}
+  if(t1-t0<3600e3){  // all within an hour (a tiny grid deciding at once): by vote number; else over time
+    pts.forEach(p=>{p[1]==="y"?y++:p[1]==="n"?n++:0;ser.push([y,n])});return{ser,count:pts.length,span:t1-t0,byOrder:true}}
   const N=60;let j=0;for(let i=1;i<=N;i++){const t=t0+(t1-t0)*i/N;while(j<pts.length&&pts[j][0]<=t){pts[j][1]==="y"?y++:pts[j][1]==="n"?n++:0;j++}ser.push([y,n])}
   return{ser,count:pts.length,span:t1-t0,t0,t1}}
 function liveTicks(L){if(L.byOrder)return['1st vote','','Vote #'+L.count];const f=t=>new Date(t).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric"});return[f(L.t0),'',f(L.t1)]}
@@ -502,7 +503,7 @@ function liveChartBlock(it){if(it.kind==="office"&&it.act==="election")return ""
   const h=L.span/3600e3;const end=isClosed(it)?'Closed':'Now';const ticks=['Start',h>=48?Math.round(h/2)+'h':'',end];
   const last=L.ser[L.ser.length-1];
   const t=tally(it);const need=Math.floor(t.eligible/2)+1;
-  return '<div class="card wc"><div class="wch">Votes over time</div>'+lineChart(L.ser,{ticks})+'<div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+last[0]+'</span><span style="color:var(--no);font-weight:700">No '+last[1]+'</span></div></div>'+
+  return '<div class="card wc"><div class="wch">Votes over time</div>'+lineChart(L.ser,{ticks})+'<div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+last[0].toLocaleString()+'</span><span style="color:var(--no);font-weight:700">No '+last[1].toLocaleString()+'</span></div></div>'+
   (true?'':voteFacts({closed:isClosed(it),y:t.y,n:t.n,min:t.min,members:t.eligible,decided:t.early,left:isClosed(it)?'':left(it.closes-now()).replace(/ left$/,''),hours:Math.round((it.closes-it.at)/3600e3)}))}
 function v1Details(st){const t1=st.doneAt||Date.now(),t0=st.votedAt||t1;return detailCard([['Proposed by','You'],['Proposed',fdt(t0)],['Voting closed',fdt(t1)],['Supporters','<span class="kvy">✓ Reached</span>'],['Your vote',st.voted==='y'?'<span class="kvy">Yes</span>':st.voted==='n'?'<span class="kvn">No</span>':'<span class="muted">Not yet</span>']])}
 function simChip(label){return chipHead(/^Remove/.test(label)?"Delete":/^Move/.test(label)?"Move":/^Reword/.test(label)?"Replace":"Add",gridName(PRAC_CELL))}
@@ -917,7 +918,7 @@ const IOS=!!(window.Capacitor&&window.Capacitor.getPlatform&&window.Capacitor.ge
 const PRIV_HTML=IOS?'<b>For maximum secrecy, turn on <a href="https://orbot.app" target="_blank" rel="noopener">Orbot</a>, a free Tor app, before you vote.</b> Without it, a member acting in bad faith could run a host and match internet addresses to votes.':PRIV_WEB;
 function noticeList(o){o=o||{};const out=[];const uid=o.member||S.me;const self=uid===S.me;const e=engine(uid);if(!e)return out;
   if(self&&!o.member&&plainRoute())out.push({id:"priv",sig:"1",kind:"block",keep:true,html:PRIV_HTML});
-  if(self&&!o.member&&BETA_WAIVE)out.push({id:"trial",sig:"1",kind:"beta",html:'<b>We\'re still testing.</b> Votes during testing are for practice. They won\'t become party policy, and we may clear them before the official launch.'});
+  if(self&&!o.member&&BETA_WAIVE)out.push({id:"trial",sig:"2",kind:"beta",html:'<b>We\'re still testing.</b> Citizens Party isn\'t a registered political party yet. Votes during testing are for practice. They won\'t become party policy, and we may clear them before the official launch.'});
   if(self&&e.waivedNew&&e.waivedNew>now())out.push({id:"cool",sig:String(e.waivedNew),kind:"beta",html:(e.m.movedAt&&e.m.movedAt===e.m.joinedAt?'You moved grids, so':'As a new member,')+' you\'d normally wait another <b>'+hm(e.waivedNew-now())+'</b> before you can vote or propose. For the beta, that\'s waived, so you can start now. <button type="button" class="tlink" data-act="why-lock">Why?</button>'});
   if(e.inBox)out.push({id:"box",sig:e.why+e.until,kind:"block",html:self?(e.why==="new"?'<b>New member.</b> You can start voting and proposing '+dot(fdt(e.until))+'':'<b>In the penalty box until '+dot(fdt(e.until))+'</b> You missed a required vote, so you can\'t vote or propose until then.'):'<b>'+(e.why==="new"?'New member':'In the penalty box')+' until '+dot(fdt(e.until))+'</b> Can\'t vote, propose or run for a lead until then.'});
   if(self&&!o.member&&window.CPAccount&&window.CPAccount.online&&window.CPAccount.synced&&window.CPAccount.synced()&&!window.CPAccount.online())out.push({id:"off",sig:String(Math.floor(now()/36e5)),kind:"block",html:'<b>Can\'t reach the party\'s hosts.</b> What you do is saved on this phone and goes out once it reconnects.'});
@@ -1037,7 +1038,7 @@ function endChip(it){const o=outcome(it);if(it.kind!=="principle"&&it.kind!=="pr
 // "X of Y voted", counting this member's own vote at once while it's still on its way to the hosts
 function sending(it){try{return !!(window.CPAccount&&window.CPAccount.unsent&&window.CPAccount.unsent("items/"+it.id))}catch(e){return false}}
 function votedN(it){const t=tally(it);const mv=myVote(it.id);const sent=mv!=null&&ballotsOf(it).some(b=>b.k===myKey(it));const sending=mv!=null&&!sent;
-  return{n:t.voters+(sending?1:0),of:t.eligible,sending,text:(t.voters+(sending?1:0))+' of '+t.eligible+' voted'+(sending?' (sending…)':'')}}
+  return{n:t.voters+(sending?1:0),of:t.eligible,sending,text:(t.voters+(sending?1:0)).toLocaleString()+' of '+t.eligible.toLocaleString()+' voted'+(sending?' (sending…)':'')}}
 function actWord(it){return it.removes?"Delete":it.moves?"Move":it.replaces?"Replace":"Add"}
 function fshort(t){const d=now()-t;if(d>=0&&d<7*864e5){const h=Math.floor(d/36e5);return h<1?'just now':h<24?h+'h ago':Math.floor(h/24)+'d ago'}try{const D=new Date(t),N=new Date();return D.toLocaleDateString(undefined,D.getFullYear()===N.getFullYear()?{month:"short",day:"numeric"}:{month:"short",day:"numeric",year:"numeric"})}catch(e){return fdate(t)}}
 function moveTag(it){if(!it.moves||isClosed(it))return "";const x=S.items[it.moves];const f=x&&seatOf(x);return f&&it.to?' #'+f+' → #'+it.to:''}
@@ -1080,7 +1081,8 @@ function searchView(){maybeVerify();const f=vsState();const mc=myCell();
   const cells=[...new Set(Object.values(S.items).filter(it=>it.level!=="prov"&&it.cell&&it.cell!==mc).map(it=>it.cell))].sort((a,b)=>gridName(a).localeCompare(gridName(b)));
   const need=needsVote().length;
   const cnt=st=>{const k=f.st;f.st=st;const n=vsMatch().length;f.st=k;return n};
-  const chips=[["all","All"],["open","Open"],["closed","Closed"]].map(([k,l])=>[k,l+' <span>'+cnt(k)+'</span>']);
+  const kplus=n=>n>=1000?Math.floor(n/1000)+"k+":String(n);
+  const chips=[["all","All"],["open","Open"],["closed","Closed"]].map(([k,l])=>[k,l+' <span>'+kplus(cnt(k))+'</span>']);
   return '<div><h1 style="margin:0">Votes</h1><p class="muted small" style="margin:4px 0 0">Every vote, in every grid and BC-wide.</p></div>'+
   '<div class="vsticky"><div class="vsbar"><input class="inp" id="vs-q" type="search" placeholder="Search votes" value="'+esc(f.q)+'" autocomplete="off" aria-label="Search votes">'+
   '<select class="inp" id="vs-sc" aria-label="Where"><option value="all"'+(f.sc==="all"?' selected':'')+'>Everywhere</option><option value="mine"'+(f.sc==="mine"?' selected':'')+'>'+esc(gridName(mc))+' (yours)</option><option value="bc"'+(f.sc==="bc"?' selected':'')+'>BC-wide</option>'+cells.map(c=>'<option value="'+c+'"'+(f.sc===c?' selected':'')+'>'+esc(gridName(c))+'</option>').join("")+'</select></div>'+
@@ -1123,7 +1125,7 @@ function prinVotePage(it){const closed=isClosed(it);const t=tally(it);const o=ou
   const sup=!P||!qq||closed||vd?'':qq.met?'<p class="gofull">✓ Going to a full vote · 51% needed to pass</p>':supLine(qShow(it)?qq.yes:null,qq.need);
   const top=P?'':'<div class="secthd">'+endChip(it)+(hide?'<span class="muted small">'+esc(vn.text)+'</span>':'<button type="button" class="tlink small plain" data-act="open-cast" data-v="'+it.id+'">'+esc(vn.text)+' ›</button>')+'</div>';
   const chart=hide?lockChart(it.level==="prov"?t.q:vn.n,pv,it.level==="prov"):'<div class="'+fade.trim()+'">'+lineChart(L.ser.length>1?L.ser:[[0,0],[0,0]],{ticks:L.count?ticks:['Start','','Now'],max:L.count<min?min:0})+
-    '<div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+t.y+'</span><span style="color:var(--no);font-weight:700">No '+t.n+'</span></div>'+
+    '<div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+t.y.toLocaleString()+'</span><span style="color:var(--no);font-weight:700">No '+t.n.toLocaleString()+'</span></div>'+
     '<p class="small turnline'+(t.voters>=t.min?' ok':'')+'">'+(t.voters>=t.min?'✓ Minimum of '+t.min+' vote'+(t.min===1?'':'s')+' met':'Needs at least '+t.min+' votes')+'</p></div>';
   const res='<div class="card results">'+top+sum+sup+(closed&&P&&o.label==="Expired"&&hide?'':chart)+'</div>';
   const byGrid=it.level==="prov"&&!hide?'<div class="card wc"><div class="wch">By grid</div>'+Object.keys(t.byCell).filter(c=>t.byCell[c].y+t.byCell[c].n>=t.min).sort((a,b)=>gridName(a).localeCompare(gridName(b))).map(c=>{const g=t.byCell[c];return '<div class="kv"><span>'+gridLink(c,gridName(c))+'</span><span>'+(g.y>g.n?'<span class="kvy">In favour</span>':'<span class="kvn">Against</span>')+' <span class="muted">'+g.y+'–'+g.n+'</span></span></div>'}).join("")+'<p class="muted small" style="margin:8px 0 0">Grids that haven\'t reached '+t.min+' votes aren\'t shown.</p></div>':'';
@@ -1201,7 +1203,7 @@ function resultsBlock(it){
   if(t.election){const tot=Math.max(1,t.total);
     h+=(t.rank.length?t.rank.map(id=>{const c=t.counts[id]||0;return '<div class="cand">'+avatar(id)+'<div class="tx"><div style="font-weight:700">'+esc(nameOf(id))+'</div><div class="bar" style="margin-top:6px"><b class="a" style="width:'+(c/tot*100)+'%"></b></div></div><b>'+c+'</b></div>'}).join(""):'')}
   else{const tot=Math.max(1,t.y+t.n);
-    h+='<div class="bar big" style="margin:12px 0 6px"><b class="y" style="width:'+(t.y/tot*100)+'%"></b><b class="n" style="width:'+(t.n/tot*100)+'%"></b></div><div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+t.y+'</span><span style="color:var(--no);font-weight:700">No '+t.n+'</span></div>';
+    h+='<div class="bar big" style="margin:12px 0 6px"><b class="y" style="width:'+(t.y/tot*100)+'%"></b><b class="n" style="width:'+(t.n/tot*100)+'%"></b></div><div class="secthd small"><span style="color:var(--yes);font-weight:700">Yes '+t.y.toLocaleString()+'</span><span style="color:var(--no);font-weight:700">No '+t.n.toLocaleString()+'</span></div>';
     if(it.level==="prov")h+='<div style="margin-top:10px">'+bcMap(id=>{const c=t.byCell[id];if(!c)return null;const n=c.y+c.n;if(n<t.min)return{cls:"f-l",label:n};return{cls:c.y>c.n?"f-y":c.y<c.n?"f-n":"f-t",dark:true}})+'</div><p class="muted small" style="margin:6px 0 0">'+t.yc+' of '+t.q+' qualified grids say yes.</p>'}
   return h+'</div>';
 }

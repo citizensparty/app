@@ -4,20 +4,20 @@
   python3 native/scripts/ios_shots.py <App.app built for the simulator> <output dir>
 
 1. The app as it ships: its first screen (talks to the live hosts, only reads).
-2. The same app with sample data (tests/mock.js, the same scenes as tools/make_shots.py): a vote, the grid, Votes,
-   the vote record, in light and dark. The page inside the app tells this script when a scene is ready
+2. The same app with sample data (native/scripts/sample_shots.py): the grid, a proposed change, a vote's results,
+   Votes, the vote record, in light and dark. The page inside the app tells this script when a scene is ready
    (http://127.0.0.1:PORT/shot), and the script takes the picture with `simctl`.
-Output: <out>/<n>-<scene>-<light|dark>.png at the phone's full resolution (App Store size for a 6.9-inch iPhone).
+Output: <out>/<n>-<scene>-<light|dark>.png (1 to 5 in App Store order) at the phone's full resolution (App Store size for a 6.9-inch iPhone).
 Needs dist/app (python3 tools/build.py).
 """
 import http.server, json, pathlib, shutil, subprocess, sys, threading, time
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tests"))
-from apppage import app_body
+sys.path.insert(0, str(ROOT / "native/scripts"))
+from sample_shots import PORT, sample_html
 
 APP_ID = "ca.citizensparty.app"
-PORT = 8123
 SRC, OUT = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -46,14 +46,9 @@ simctl("bootstatus", UDID, "-b")
 simctl("status_bar", UDID, "override", "--time", "9:41", "--dataNetwork", "wifi", "--wifiMode", "active",
        "--wifiBars", "3", "--cellularMode", "active", "--cellularBars", "4", "--batteryState", "charged", "--batteryLevel", "100")
 
-n = 0
-
-
 def shot(name):
-    global n
-    n += 1
-    simctl("io", UDID, "screenshot", str(OUT / ("%02d-%s.png" % (n, name))))
-    print("shot", n, name, flush=True)
+    simctl("io", UDID, "screenshot", str(OUT / (name + ".png")))
+    print("shot", name, flush=True)
 
 
 def run(app, scheme):
@@ -66,54 +61,14 @@ def run(app, scheme):
 # ----- 1. the app as it ships -----
 run(SRC, "light")
 time.sleep(25)  # it waits up to 12 s for the hosts before its first screen
-shot("first-screen-light")
+shot("9-first-screen-light")  # the welcome screen: not for the store listing
 simctl("uninstall", UDID, APP_ID)
 
-# ----- 2. sample data, driven from inside the page -----
-now = int(time.time() * 1000)
-store = {"members/u_me": {"cell": "11-10", "town": "Burnaby", "joinedAt": now - 864e5, "introAt": now - 864e5, "cand": {}, "res": []}}
-mock = (ROOT / "tests/mock.js").read_text().replace("const store={};", "const store=" + json.dumps(store) + ";") \
-    .replace("isOwner:async()=>true", "isOwner:async()=>false")
-DRIVER = r"""
-(function(){
-const S="http://127.0.0.1:%d";
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
-const q=s=>document.querySelector(s);
-const tap=async(s,ms)=>{const e=q(s);if(!e)throw new Error("missing "+s);e.click();await wait(ms||400)};
-const shot=name=>fetch(S+"/shot?name="+encodeURIComponent(name)).catch(()=>{});
-const log=m=>fetch(S+"/log?m="+encodeURIComponent(m)).catch(()=>{});
-window.addEventListener("error",e=>log("page error: "+e.message));
-async function hide(){for(let i=0;i<6&&q(".nhide");i++)await tap(".nhide",250)}
-async function propose(slot,text){
-  await tap("[data-act=tab][data-v=plat]",300);
-  if(slot>1)await tap("[data-act=amend]",300);
-  await tap('[data-act=pe][data-v=gap][data-id="'+slot+'"]',300);
-  const i=q("#pl-in");i.value=text;i.dispatchEvent(new Event("input",{bubbles:true}));await wait(400);
-  await tap("#pl-go");await tap(".prcpt1 [data-act=open-item]",300);
-  const k=Object.keys(__store).filter(k=>k.startsWith("items/")).find(k=>JSON.stringify(__store[k]).includes(text));
-  const b=document.createElement("button");b.dataset.act="istage";b.dataset.v=k.slice(6);document.body.appendChild(b);b.click();b.remove();
-  await wait(400)}
-async function main(){
-  const scheme=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
-  await wait(1500);await hide();
-  const passed=["Party finances are published every month.","Members choose their own candidates.","Elected members vote the way their grid decides."];
-  for(let i=0;i<passed.length;i++){await propose(i+1,passed[i]);await tap(".ynb-y",150);await tap(".ynb-y",2500)}
-  const t=Date.now();for(let i=0;i<146;i++)__store["members/u_n"+i]={cell:"11-10",town:"Burnaby",joinedAt:t,introAt:t,cand:{},res:[]};__notify();await wait(300);
-  await propose(passed.length+1,"Every party meeting is streamed live.");
-  await hide();scrollTo(0,0);await wait(500);await shot("vote-"+scheme);
-  await tap("[data-act=tab][data-v=plat]",500);await hide();scrollTo(0,0);await wait(300);await shot("grid-"+scheme);
-  await tap("[data-act=tab][data-v=search]",500);await hide();await wait(300);await shot("votes-"+scheme);
-  await tap("[data-act=open-record]",1500);await shot("record-"+scheme);
-  await fetch(S+"/done")}
-main().catch(e=>log("driver: "+(e&&e.message||e)).then(()=>fetch(S+"/done")));
-})();
-""" % PORT
+# ----- 2. sample data, driven from inside the page (native/scripts/sample_shots.py) -----
 SAMPLE = OUT.parent / "App-sample.app"
 shutil.rmtree(SAMPLE, ignore_errors=True)
 shutil.copytree(SRC, SAMPLE, symlinks=True)
-(SAMPLE / "public/index.html").write_text(
-    '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><script>'
-    + mock + '</script></head><body>' + app_body() + '<script>' + DRIVER + '</script></body></html>', encoding="utf-8")
+(SAMPLE / "public/index.html").write_text(sample_html(), encoding="utf-8")
 # let this copy (never the shipped app) talk to this script on the Mac
 sh("plutil", "-replace", "NSAppTransportSecurity", "-json", '{"NSAllowsLocalNetworking":true}', str(SAMPLE / "Info.plist"))
 
@@ -141,8 +96,8 @@ threading.Thread(target=srv.serve_forever, daemon=True).start()
 for scheme in ("light", "dark"):
     done.clear()
     run(SAMPLE, scheme)
-    if not done.wait(180):
-        print("no answer from the app in 3 minutes; taking a picture of what it shows")
+    if not done.wait(900):
+        print("no answer from the app in 15 minutes; taking a picture of what it shows")
         shot("stuck-" + scheme)
     simctl("uninstall", UDID, APP_ID)
 srv.shutdown()

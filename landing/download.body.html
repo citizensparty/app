@@ -1,39 +1,37 @@
 <!-- title: Get the app · Citizens Party -->
+<style>
+.dl.app{align-items:stretch}
+.dl.app .dlc{gap:12px}
+.dl.app h3{display:flex;align-items:center;gap:10px;min-height:32px}
+.dl.app .go{min-height:48px;display:flex;align-items:center}
+.badge img{display:block;height:48px;width:auto}
+.dlc.test{background:var(--warn-soft);border-color:var(--warn)}
+.chip{font:700 12px var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--surface);border:1px solid var(--warn);border-radius:999px;padding:3px 9px}
+.arrowlink{font-weight:700;font-size:17px;color:var(--accent);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px}
+</style>
 <main id="top">
   <section>
     <div class="wrap">
       <div class="sechd">
         <div class="k">Get the app</div>
         <h2>On your phone, in a minute.</h2>
-        <p>Members take part through the Citizens Party app. It makes your key, keeps your copy of the record and signs your votes. Your key lives only on this device. If you lose it, you'll re-register with a new one.</p>
-        <p class="mute small">We&#39;re in open beta, so setup takes a few more steps than it will later.</p>
+        <p>Everything happens in the Citizens Party app. It&#39;s free, and it keeps your vote private to your phone. If you lose your phone, you&#39;ll simply sign up again.</p>
       </div>
-      <div class="dl">
-        <div class="dlc">
-          <h3>Android</h3>
-          {{APK}}
-          <ol class="olist">
-            <li>Tap the download button, then open the file.</li>
-            <li>If your phone asks, allow your browser to install apps.</li>
-            <li>If Play Protect says the app is blocked, tap <b>More details</b>, then <b>Install anyway</b>.</li>
-            <li>Tap <b>Install</b>, then open Citizens Party.</li>
-          </ol>
-          <p class="mute small">Coming to Google Play soon.</p>
-        </div>
+      <div class="dl app">
         <div class="dlc">
           <h3>iPhone</h3>
-          <p class="mute">The iPhone app is coming to the App Store soon. Until then, use the web app; it works the same way.</p>
-          <a class="btn pri" href="app/">Open the app in Safari</a>
-          <ol class="olist">
-            <li>Open the link in <b>Safari</b> (not Chrome: only Safari can add it to your home screen).</li>
-            <li>Tap the <b>Share</b> button, then <b>Add to Home Screen</b>.</li>
-            <li>Open Citizens Party from your home screen. Keep it there: iPhones can clear a website's data after a week without use, but not a home screen app's.</li>
-          </ol>
+          <div class="go"><a class="badge" href="https://apps.apple.com/app/citizens-party/id6830307269" target="_blank" rel="noopener"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="144" height="48"></a></div>
+          <p class="mute small">Download and start voting in minutes.</p>
+        </div>
+        <div class="dlc test">
+          <h3>Android <span class="chip">Testing</span></h3>
+          <div class="go"><a class="arrowlink" href="testers.html">Help get us on Google Play&nbsp;→</a></div>
+          <p class="mute small">Takes 5 minutes. Not on the Play Store yet.</p>
         </div>
         <div class="dlc">
           <h3>Computer</h3>
-          <a class="btn pri" href="app/">Open the web app</a>
-          <p class="mute small">Works in any up-to-date browser. Chrome and Edge can install it like an app.</p>
+          <div class="go"><a class="arrowlink" href="app/">Open the web app&nbsp;→</a></div>
+          <p class="mute small">Works in any up-to-date browser.</p>
         </div>
       </div>
     </div>
